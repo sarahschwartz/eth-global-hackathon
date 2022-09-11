@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import UploadContent from '../components/UploadContent'
 
 export default function Home() {
   return (
@@ -11,6 +12,8 @@ export default function Home() {
       </Head>
 
      <h1> Home </h1>
+
+     <UploadContent/>
     </div>
   )
 }
