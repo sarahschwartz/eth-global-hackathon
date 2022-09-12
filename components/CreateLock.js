@@ -53,7 +53,12 @@ export default function CreateLock() {
 
   return (
     <div>
-      <button onClick={createUpgradeableLock}>Create Lock</button>
+      <button 
+      class="my-4 border-2 hover:bg-green-500 hover:text-white border-green-500 px-4 py-2"
+      onClick={createUpgradeableLock}
+      >
+        Create Lock
+      </button>
     </div>
   );
 }
