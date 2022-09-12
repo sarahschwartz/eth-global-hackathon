@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getProfile } from "../../utils/lensQueries";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -21,10 +21,13 @@ export default function Dashboard() {
   async function fetchProfile() {
     try {
       let response = await getProfile({ handle: lensHandle });
-      if(response.data.profile.ownedBy === address){
-        setIsUser(true)
+      console.log("RESPONSE", response)
+      if(response.data.profile){
+        setProfile(response.data.profile);
+        if(response.data.profile.ownedBy === address){
+          setIsUser(true)
+        }
       }
-      setProfile(response.data.profile);
     } catch (error) {
       console.log("ERROR:", error);
     }
