@@ -417,3 +417,96 @@ export const getPublications = (id) => {
     },
   })
 }
+
+const CREATE_PROFILE = `
+  mutation($request: CreateProfileRequest!) { 
+    createProfile(request: $request) {
+      ... on RelayerResult {
+        txHash
+      }
+      ... on RelayError {
+        reason
+      }
+            __typename
+    }
+ }
+`
+
+export const createProfile = (createProfileRequest) => {
+   return apolloClient.mutate({
+    mutation: gql(CREATE_PROFILE),
+    variables: {
+      request: createProfileRequest
+    },
+  })
+}
+
+const GET_CHALLENGE = `
+  query($request: ChallengeRequest!) {
+    challenge(request: $request) { text }
+  }
+`
+
+export const generateChallenge = (address) => {
+   return apolloClient.query({
+    query: gql(GET_CHALLENGE),
+    variables: {
+      request: {
+         address,
+      },
+    },
+  })
+}
+
+const AUTHENTICATION = `
+  mutation($request: SignedAuthChallenge!) { 
+    authenticate(request: $request) {
+      accessToken
+      refreshToken
+    }
+ }
+`
+
+export const authenticate = (address, signature) => {
+   return apolloClient.mutate({
+    mutation: gql(AUTHENTICATION),
+    variables: {
+      request: {
+        address,
+        signature,
+      },
+    },
+  })
+}
+
+const REFRESH_AUTHENTICATION = `
+  mutation($request: RefreshRequest!) { 
+    refresh(request: $request) {
+      accessToken
+      refreshToken
+    }
+ }
+`
+
+export const refreshAuth = (refreshToken) => {
+   return apolloClient.mutate({
+    mutation: gql(REFRESH_AUTHENTICATION),
+    variables: {
+      request: {
+        refreshToken,
+      },
+    },
+  })
+}
+
+const GET_PING = `
+  query {
+    ping
+  }
+`
+
+export const ping = () => {
+   return apolloClient.query({
+    query: gql(GET_PING),
+  })
+}

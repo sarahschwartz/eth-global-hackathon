@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import UploadContent from '../components/UploadContent'
+import CreateLensProfile from '../components/CreateLensProfile'
+import { ping } from '../utils/lensQueries' 
+
 
 export default function Home() {
   return (
@@ -15,7 +17,14 @@ export default function Home() {
       Home
     </h1>
 
-     <UploadContent/>
+    <CreateLensProfile/>
+
+    <button onClick={async () => {
+      let resp = await ping()
+      console.log("PING", resp)
+    }}>Ping Lens Health</button>
+
+   
     </div>
   )
 }
