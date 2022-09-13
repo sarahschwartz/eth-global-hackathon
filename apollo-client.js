@@ -3,7 +3,8 @@
 // @apollo/client/core!
 import { ApolloClient, InMemoryCache, HttpLink, ApolloLink } from '@apollo/client'
 
-const httpLink = new HttpLink({ uri: 'https://api-mumbai.lens.dev/' });
+const lensAPIHttpLink = new HttpLink({ uri: 'https://api-mumbai.lens.dev/' });
+const unlockSubgraphHttpLink = new HttpLink({ uri: 'https://api.thegraph.com/subgraphs/name/unlock-protocol/mumbai' });
 
 // example how you can pass in the x-access-token into requests using `ApolloLink`
 const authLink = new ApolloLink((operation, forward) => {
@@ -24,6 +25,12 @@ const authLink = new ApolloLink((operation, forward) => {
 });
 
 export const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: ApolloLink.split(
+    operation => operation.getContext().clientName === "unlock-subgraph",
+    // the string "third-party" can be anything you want,
+    // we will use it in a bit
+    unlockSubgraphHttpLink, // <= apollo will send to this if clientName is "third-party"
+    lensAPIHttpLink // <= otherwise will send to this
+  ),
   cache: new InMemoryCache(),
 })

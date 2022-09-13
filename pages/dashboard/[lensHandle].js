@@ -4,9 +4,12 @@ import { getProfile } from "../../utils/lensQueries";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import UploadContent from "../../components/UploadContent";
+import CreateLock from "../../components/CreateLock";
+import { getLocksByUser } from "../../utils/unlockQueries"
 
 export default function Dashboard() {
   const [profile, setProfile] = useState();
+  const [locks, setLocks] = useState([]);
   const [isUser, setIsUser] = useState(false);
   const router = useRouter();
   const { lensHandle } = router.query;
@@ -28,6 +31,11 @@ export default function Dashboard() {
           setIsUser(true)
         }
       }
+      response = await getLocksByUser(address)
+      console.log("LOCKS BY USER!!", response)
+      if(response.data.locks){
+        setLocks(response.data.locks)
+      }
     } catch (error) {
       console.log("ERROR:", error);
     }
@@ -37,10 +45,24 @@ export default function Dashboard() {
         <ConnectButton />
         {isUser && (
             <div>
-                <h1>Creator Dashboard</h1>
+                <h1 className="text-3xl font-bold underline">Creator Dashboard</h1>
                 {profile && <div> {profile.handle}</div>}
                 {address && <div> {address}</div>}
                 <UploadContent/>
+                <CreateLock />
+
+                <h2 className="text-2xl font-bold">
+                  Your Published Locks
+                </h2>
+                {locks.length > 0 && (
+                  <div>
+                    {locks.map((lock) => (
+                      <div key={lock.id}>
+                        {lock.name}
+                      </div>
+                      ))}
+                    </div>
+                )}
             </div>
         )}
 

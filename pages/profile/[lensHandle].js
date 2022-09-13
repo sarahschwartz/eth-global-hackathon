@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import CreateLock from "../../components/CreateLock";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ProfileDetails from "../../components/ProfileDetails"
 import ProfilePublications from "../../components/ProfilePublications"
@@ -36,7 +35,6 @@ export default function Profile() {
     <div>
       <h1 className="text-3xl font-bold underline my-4">Profile Page</h1>
       <ConnectButton />
-      <CreateLock />
 
       {profile && (
         <ProfileDetails profile={profile}/>
