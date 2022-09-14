@@ -3,10 +3,9 @@ import { useState, useEffect, useContext } from "react";
 import { getProfile } from "../../utils/lensQueries";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import UploadContent from "../../components/UploadContent";
+import DashboardLocks from "../../components/DashboardLocks";
 import CreateLock from "../../components/CreateLock";
 import { getLocksByUser } from "../../utils/unlockQueries";
-import GrantKeysForm from "../../components/GrantKeysForm";
 
 export default function Dashboard() {
   const [profile, setProfile] = useState();
@@ -51,17 +50,8 @@ export default function Dashboard() {
           {address && <div> {address}</div>}
           <CreateLock />
 
-          <h2 className="text-2xl font-bold">Your Published Locks</h2>
           {locks.length > 0 && (
-            <div>
-              {locks.map((lock) => (
-                <div key={lock.id} className="py-4">
-                  <h3 className="text-xl font-bold">{lock.name}</h3>
-                  <UploadContent lockAddress={lock.address} />
-                  <GrantKeysForm lockAddress={lock.address} />
-                </div>
-              ))}
-            </div>
+            <DashboardLocks locks={locks}/>
           )}
         </div>
       )}
