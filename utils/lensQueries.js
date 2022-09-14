@@ -1,5 +1,108 @@
-import { apolloClient } from '../apollo-client';
-import { gql } from '@apollo/client'
+import { apolloClient } from "../apollo-client";
+import { gql } from "@apollo/client";
+
+const GET_PROFILES = `
+  query($request: ProfileQueryRequest!) {
+    profiles(request: $request) {
+      items {
+        id
+        name
+        bio
+        attributes {
+          displayType
+          traitType
+          key
+          value
+        }
+        followNftAddress
+        metadata
+        isDefault
+        picture {
+          ... on NftImage {
+            contractAddress
+            tokenId
+            uri
+            verified
+          }
+          ... on MediaSet {
+            original {
+              url
+              mimeType
+            }
+          }
+          __typename
+        }
+        handle
+        coverPicture {
+          ... on NftImage {
+            contractAddress
+            tokenId
+            uri
+            verified
+          }
+          ... on MediaSet {
+            original {
+              url
+              mimeType
+            }
+          }
+          __typename
+        }
+        ownedBy
+        dispatcher {
+          address
+          canUseRelay
+        }
+        stats {
+          totalFollowers
+          totalFollowing
+          totalPosts
+          totalComments
+          totalMirrors
+          totalPublications
+          totalCollects
+        }
+        followModule {
+          ... on FeeFollowModuleSettings {
+            type
+            amount {
+              asset {
+                symbol
+                name
+                decimals
+                address
+              }
+              value
+            }
+            recipient
+          }
+          ... on ProfileFollowModuleSettings {
+          type
+          }
+          ... on RevertFollowModuleSettings {
+          type
+          }
+        }
+      }
+      pageInfo {
+        prev
+        next
+        totalCount
+      }
+    }
+  }
+`;
+
+export const getProfiles = async (request) => {
+  const response = await apolloClient.query({
+    query: gql(GET_PROFILES),
+    variables: {
+      request,
+    },
+  });
+
+  return response;
+};
 
 const GET_PROFILE = `
   query($request: SingleProfileQueryRequest!) {
@@ -87,15 +190,15 @@ const GET_PROFILE = `
 `;
 
 export const getProfile = async (request) => {
-   const response = await apolloClient.query({
+  const response = await apolloClient.query({
     query: gql(GET_PROFILE),
     variables: {
-      request
+      request,
     },
-  })
+  });
 
-  return response
-}
+  return response;
+};
 
 const GET_PUBLICATIONS = `
   query($id: ProfileId!) {
@@ -410,13 +513,13 @@ const GET_PUBLICATIONS = `
 `;
 
 export const getPublications = (id) => {
-   return apolloClient.query({
+  return apolloClient.query({
     query: gql(GET_PUBLICATIONS),
     variables: {
-      id
+      id,
     },
-  })
-}
+  });
+};
 
 const CREATE_PROFILE = `
   mutation($request: CreateProfileRequest!) { 
@@ -430,33 +533,33 @@ const CREATE_PROFILE = `
             __typename
     }
  }
-`
+`;
 
 export const createProfile = (createProfileRequest) => {
-   return apolloClient.mutate({
+  return apolloClient.mutate({
     mutation: gql(CREATE_PROFILE),
     variables: {
-      request: createProfileRequest
+      request: createProfileRequest,
     },
-  })
-}
+  });
+};
 
 const GET_CHALLENGE = `
   query($request: ChallengeRequest!) {
     challenge(request: $request) { text }
   }
-`
+`;
 
 export const generateChallenge = (address) => {
-   return apolloClient.query({
+  return apolloClient.query({
     query: gql(GET_CHALLENGE),
     variables: {
       request: {
-         address,
+        address,
       },
     },
-  })
-}
+  });
+};
 
 const AUTHENTICATION = `
   mutation($request: SignedAuthChallenge!) { 
@@ -465,10 +568,10 @@ const AUTHENTICATION = `
       refreshToken
     }
  }
-`
+`;
 
 export const authenticate = (address, signature) => {
-   return apolloClient.mutate({
+  return apolloClient.mutate({
     mutation: gql(AUTHENTICATION),
     variables: {
       request: {
@@ -476,8 +579,8 @@ export const authenticate = (address, signature) => {
         signature,
       },
     },
-  })
-}
+  });
+};
 
 const REFRESH_AUTHENTICATION = `
   mutation($request: RefreshRequest!) { 
@@ -486,27 +589,137 @@ const REFRESH_AUTHENTICATION = `
       refreshToken
     }
  }
-`
+`;
 
 export const refreshAuth = (refreshToken) => {
-   return apolloClient.mutate({
+  return apolloClient.mutate({
     mutation: gql(REFRESH_AUTHENTICATION),
     variables: {
       request: {
         refreshToken,
       },
     },
-  })
-}
+  });
+};
 
 const GET_PING = `
   query {
     ping
   }
-`
+`;
 
 export const ping = () => {
-   return apolloClient.query({
+  return apolloClient.query({
     query: gql(GET_PING),
-  })
-}
+  });
+};
+
+const GET_FOLLOWERS = `
+  query($request: FollowersRequest!) {
+    followers(request: $request) { 
+	   items {
+        wallet {
+          address
+          defaultProfile {
+            id
+            name
+            bio
+            attributes {
+              displayType
+              traitType
+              key
+              value
+            }
+            followNftAddress
+            metadata
+            handle
+            picture {
+              ... on NftImage {
+                contractAddress
+                tokenId
+                uri
+                verified
+              }
+              ... on MediaSet {
+                original {
+                  url
+                  mimeType
+                }
+              }
+            }
+            coverPicture {
+              ... on NftImage {
+                contractAddress
+                tokenId
+                uri
+                verified
+              }
+              ... on MediaSet {
+                original {
+                  url
+                  mimeType
+                }
+              }
+            }
+            ownedBy
+            dispatcher {
+              address
+              canUseRelay
+            }
+            stats {
+              totalFollowers
+              totalFollowing
+              totalPosts
+              totalComments
+              totalMirrors
+              totalPublications
+              totalCollects
+            }
+            followModule {
+              ... on FeeFollowModuleSettings {
+                type
+                contractAddress
+                amount {
+                  asset {
+                    name
+                    symbol
+                    decimals
+                    address
+                  }
+                  value
+                }
+                recipient
+              }
+              ... on ProfileFollowModuleSettings {
+                type
+              }
+              ... on RevertFollowModuleSettings {
+                type
+              }
+            }
+          }
+        }
+        totalAmountOfTimesFollowed
+      }
+      pageInfo {
+        prev
+        next
+        totalCount
+      }
+    }
+  }
+`;
+
+export const getFollowers = async (profileId) => {
+  const response = await apolloClient.query({
+    query: gql(GET_FOLLOWERS),
+    variables: {
+      request: {
+        profileId,
+        limit: 10,
+      },
+    },
+  });
+
+  return response;
+};
