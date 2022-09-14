@@ -20,7 +20,7 @@ export const getLocksByUser = async (address) => {
   return apolloClient.query({
     query: gql(LOCKS_BY_USER),
     variables: {
-      owner: address,
+      owner: address ? address : "",
     },
     context: { clientName: "unlock-subgraph" }
   });

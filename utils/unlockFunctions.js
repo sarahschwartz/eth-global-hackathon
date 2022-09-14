@@ -1,4 +1,5 @@
 import connectContract from "./connectContract";
+import abis from "./unlockABIs"
 
 export const grantKeys = async (lockAddress, wallets, timestamp) => {
   const timestamps = wallets.map(() => timestamp);
@@ -7,12 +8,12 @@ export const grantKeys = async (lockAddress, wallets, timestamp) => {
   // An array of receiving addresses
   console.log("WALLETS", wallets);
 
-  // to do: import abi for public lock v10
+  const abi = abis.PublicLock.v10.abi
 
   try {
-    const { contract } = connectContract(lockAddress, abi);
-
-    const txn = await contract.grantKeys(wallets, timestamps);
+    const { contract, signer } = connectContract(lockAddress, abi);
+    const lockOwner = await signer.getAddress();
+    const txn = await contract.grantKeys(wallets, timestamps, [lockOwner]);
     console.log("Minting...", txn.hash);
     let wait = await txn.wait();
     console.log("Minted -- ", txn.hash);
