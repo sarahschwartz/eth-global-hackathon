@@ -1,9 +1,11 @@
 import unlockABI from "./unlockABIs.json";
 import { ethers } from "ethers";
 
-function connectContract(contractAddress) {
+function connectContract(contractAddress, abi) {
     let contractABI
-    if(contractAddress === "0x1FF7e338d5E582138C46044dc238543Ce555C963"){
+    if(abi){
+      contractABI = abi;
+    } else if(contractAddress === "0x1FF7e338d5E582138C46044dc238543Ce555C963"){
         contractABI = unlockABI
     }
 

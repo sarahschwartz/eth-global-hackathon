@@ -5,7 +5,8 @@ import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import UploadContent from "../../components/UploadContent";
 import CreateLock from "../../components/CreateLock";
-import { getLocksByUser } from "../../utils/unlockQueries"
+import { getLocksByUser } from "../../utils/unlockQueries";
+import GrantKeysForm from "../../components/GrantKeysForm";
 
 export default function Dashboard() {
   const [profile, setProfile] = useState();
@@ -24,17 +25,17 @@ export default function Dashboard() {
   async function fetchProfile() {
     try {
       let response = await getProfile({ handle: lensHandle });
-      console.log("RESPONSE", response)
-      if(response.data.profile){
+      console.log("RESPONSE", response);
+      if (response.data.profile) {
         setProfile(response.data.profile);
-        if(response.data.profile.ownedBy === address){
-          setIsUser(true)
+        if (response.data.profile.ownedBy === address) {
+          setIsUser(true);
         }
       }
-      response = await getLocksByUser(address)
-      console.log("LOCKS BY USER!!", response)
-      if(response.data.locks){
-        setLocks(response.data.locks)
+      response = await getLocksByUser(address);
+      console.log("LOCKS BY USER!!", response);
+      if (response.data.locks) {
+        setLocks(response.data.locks);
       }
     } catch (error) {
       console.log("ERROR:", error);
@@ -42,34 +43,30 @@ export default function Dashboard() {
   }
   return (
     <div>
-        <ConnectButton />
-        {isUser && (
+      <ConnectButton />
+      {isUser && (
+        <div>
+          <h1 className="text-3xl font-bold underline">Creator Dashboard</h1>
+          {profile && <div> {profile.handle}</div>}
+          {address && <div> {address}</div>}
+          <UploadContent />
+          <CreateLock />
+
+          <h2 className="text-2xl font-bold">Your Published Locks</h2>
+          {locks.length > 0 && (
             <div>
-                <h1 className="text-3xl font-bold underline">Creator Dashboard</h1>
-                {profile && <div> {profile.handle}</div>}
-                {address && <div> {address}</div>}
-                <UploadContent/>
-                <CreateLock />
-
-                <h2 className="text-2xl font-bold">
-                  Your Published Locks
-                </h2>
-                {locks.length > 0 && (
-                  <div>
-                    {locks.map((lock) => (
-                      <div key={lock.id}>
-                        {lock.name}
-                      </div>
-                      ))}
-                    </div>
-                )}
+              {locks.map((lock) => (
+                <div key={lock.id} className="py-4">
+                  <h3 className="text-xl font-bold">{lock.name}</h3>
+                  <GrantKeysForm lockAddress={lock.address} />
+                </div>
+              ))}
             </div>
-        )}
+          )}
+        </div>
+      )}
 
-        {!isUser && address && (
-            <div>{"Uh oh! This isn't your dashboard"}</div>
-  )}
-
+      {!isUser && address && <div>{"Uh oh! This isn't your dashboard"}</div>}
     </div>
   );
 }
