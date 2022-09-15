@@ -26,12 +26,11 @@ export default function Profile() {
       console.log("PROFILE:", response);
       setProfile(response.data.profile);
       
-      response = await getLocksByUser(response.data.profile.ownedBy);
-      console.log("LOCKS BY USER!!", response);
-      if (response.data.locks) {
-        setLocks(response.data.locks);
+      let locksResponse = await getLocksByUser(response.data.profile.ownedBy);
+      console.log("LOCKS MADE BY THIS PROFILE", locksResponse);
+      if (locksResponse.data.locks) {
+        setLocks(locksResponse.data.locks);
       }
-
       response = await getPublications(response.data.profile.id);
       console.log("PUBS:", response.data.publications.items);
       setPubs(response.data.publications.items);

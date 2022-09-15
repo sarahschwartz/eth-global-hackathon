@@ -8,6 +8,7 @@ import CreateLock from "../../components/CreateLock";
 import { getLocksByUser } from "../../utils/unlockQueries";
 
 export default function Dashboard() {
+  const [mounted, setMounted] = useState(false);
   const [profile, setProfile] = useState();
   const [locks, setLocks] = useState([]);
   const [isUser, setIsUser] = useState(false);
@@ -16,6 +17,9 @@ export default function Dashboard() {
   const { address } = useAccount();
 
   useEffect(() => {
+    if(!mounted){
+      setMounted(true);
+    }
     if (lensHandle) {
       fetchProfile();
     }
@@ -41,6 +45,7 @@ export default function Dashboard() {
     }
   }
   return (
+    mounted && (
     <div>
       <ConnectButton />
       {isUser && (
@@ -58,5 +63,6 @@ export default function Dashboard() {
 
       {!isUser && address && <div>{"Uh oh! This isn't your dashboard"}</div>}
     </div>
+    )
   );
 }

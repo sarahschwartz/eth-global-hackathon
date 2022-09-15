@@ -1,5 +1,6 @@
 import UploadContent from "./UploadContent"
 import GrantKeysForm from "./GrantKeysForm"
+import UpdateLock from "./UpdateLock"
 
 export default function DashboardLocks({locks}){
     return (
@@ -10,6 +11,7 @@ export default function DashboardLocks({locks}){
           <h3 className="text-xl font-bold">{lock.name}</h3>
           <UploadContent lockAddress={lock.address} />
           <GrantKeysForm lockAddress={lock.address} />
+          <UpdateLock lockAddress={lock.address} />
         </div>
       ))}
     </div>
