@@ -1,6 +1,7 @@
 import { db } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function LockContent({ lockAddress }) {
   const [content, setContent] = useState([]);
@@ -28,7 +29,9 @@ export default function LockContent({ lockAddress }) {
           {content.map((CID, index) => (
             <div key={index}>
               <p className="bg-teal-400 p-4 my-4">
+                <Link href={`/locks/content/${CID}`}>
                 {CID}
+                </Link>
               </p>
             </div>
           ))}
