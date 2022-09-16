@@ -3,12 +3,12 @@ import { useState, useEffect, useContext } from "react";
 import { getProfile } from "../../utils/lensQueries";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import UploadContent from "../../components/UploadContent";
+import DashboardLocks from "../../components/DashboardLocks";
 import CreateLock from "../../components/CreateLock";
 import { getLocksByUser } from "../../utils/unlockQueries";
-import GrantKeysForm from "../../components/GrantKeysForm";
 
 export default function Dashboard() {
+  const [mounted, setMounted] = useState(false);
   const [profile, setProfile] = useState();
   const [locks, setLocks] = useState([]);
   const [isUser, setIsUser] = useState(false);
@@ -17,6 +17,9 @@ export default function Dashboard() {
   const { address } = useAccount();
 
   useEffect(() => {
+    if(!mounted){
+      setMounted(true);
+    }
     if (lensHandle) {
       fetchProfile();
     }
@@ -42,6 +45,7 @@ export default function Dashboard() {
     }
   }
   return (
+    mounted && (
     <div>
       <ConnectButton />
       {isUser && (
@@ -49,24 +53,16 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold underline">Creator Dashboard</h1>
           {profile && <div> {profile.handle}</div>}
           {address && <div> {address}</div>}
-          <UploadContent />
           <CreateLock />
 
-          <h2 className="text-2xl font-bold">Your Published Locks</h2>
           {locks.length > 0 && (
-            <div>
-              {locks.map((lock) => (
-                <div key={lock.id} className="py-4">
-                  <h3 className="text-xl font-bold">{lock.name}</h3>
-                  <GrantKeysForm lockAddress={lock.address} />
-                </div>
-              ))}
-            </div>
+            <DashboardLocks locks={locks}/>
           )}
         </div>
       )}
 
       {!isUser && address && <div>{"Uh oh! This isn't your dashboard"}</div>}
     </div>
+    )
   );
 }

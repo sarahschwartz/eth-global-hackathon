@@ -1,45 +1,56 @@
-import { db } from '../firebaseConfig'
-import { doc, updateDoc, arrayUnion } from "firebase/firestore"; 
+import { db } from "../firebaseConfig";
+import { doc, updateDoc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
-export default function UploadContent(){
-    const [CID, setCID] = useState("")
-    const lockAddress = "0x6e4953f685953e0258e587aa0c67cdaa86f98bcb"
+export default function UploadContent({ lockAddress }) {
+  const [CID, setCID] = useState("");
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        await updateDoc(doc(db, "locks", lockAddress), {
-            CIDs: arrayUnion(CID)
-          });
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const docRef = doc(db, "locks", lockAddress);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      await updateDoc(docRef, {
+        CIDs: arrayUnion(CID),
+      });
+    } else {
+      await setDoc(docRef, {
+        CIDs:[CID],
+      });
     }
 
-    return (
-        <>
-            <h2>Upload Content</h2>
-            <form onSubmit={handleSubmit}>
+  }
 
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
-                <label
-                  htmlFor="cid"
-                  className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                >
-                  CID
-                </label>
-                <div className="mt-1 sm:mt-0 sm:col-span-2">
-                  <input
-                    id="cid"
-                    name="cid"
-                    type="text"
-                    className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-                    required
-                    value={CID}
-                    onChange={(e) => setCID(e.target.value)}
-                  />
-                </div>
-              </div>
+  return (
+    <>
+      <h2 className="py-2">Upload an IPFS CID to this lock</h2>
+      <form className="py-4" onSubmit={handleSubmit}>
+        <div className="">
+          <label htmlFor="cid" className="font-bold">
+            CID
+          </label>
+          <div className="">
+            <input
+              id="cid"
+              name="cid"
+              type="text"
+              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+              required
+              value={CID}
+              onChange={(e) => setCID(e.target.value)}
+            />
+          </div>
+        </div>
 
-            <button type="submit">Submit</button>
-            </form>
-        </>
-    )
+        <button
+          className="border border-solid border-blue-600 py-2 px-4"
+          type="submit"
+        >
+          Upload
+        </button>
+      </form>
+    </>
+  );
 }
