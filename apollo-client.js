@@ -1,22 +1,29 @@
 // this is showing you how you use it with react for example
 // if your using node or something else you can import using
 // @apollo/client/core!
-import { ApolloClient, InMemoryCache, HttpLink, ApolloLink } from '@apollo/client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloLink,
+} from "@apollo/client";
 
-const lensAPIHttpLink = new HttpLink({ uri: 'https://api-mumbai.lens.dev/' });
-const unlockSubgraphHttpLink = new HttpLink({ uri: 'https://api.thegraph.com/subgraphs/name/unlock-protocol/mumbai' });
+const lensAPIHttpLink = new HttpLink({ uri: "https://api-mumbai.lens.dev/" });
+const unlockSubgraphHttpLink = new HttpLink({
+  uri: "https://api.thegraph.com/subgraphs/name/unlock-protocol/mumbai",
+});
 
 // example how you can pass in the x-access-token into requests using `ApolloLink`
 const authLink = new ApolloLink((operation, forward) => {
   // Retrieve the authorization token from local storage.
   // if your using node etc you have to handle your auth different
-  const token = localStorage.getItem('lens_auth_token');
+  const token = localStorage.getItem("lens_auth_token");
   // Use the setContext method to set the HTTP headers.
-  if(token !== "undefined"){
+  if (token !== "undefined") {
     operation.setContext({
       headers: {
-        'x-access-token': `Bearer ${token}`
-      }
+        "x-access-token": `Bearer ${token}`,
+      },
     });
   }
 
@@ -26,11 +33,11 @@ const authLink = new ApolloLink((operation, forward) => {
 
 export const apolloClient = new ApolloClient({
   link: ApolloLink.split(
-    operation => operation.getContext().clientName === "unlock-subgraph",
+    (operation) => operation.getContext().clientName === "unlock-subgraph",
     // the string "third-party" can be anything you want,
     // we will use it in a bit
     unlockSubgraphHttpLink, // <= apollo will send to this if clientName is "third-party"
     lensAPIHttpLink // <= otherwise will send to this
   ),
   cache: new InMemoryCache(),
-})
+});
