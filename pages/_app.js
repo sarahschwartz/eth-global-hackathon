@@ -1,4 +1,4 @@
-import "../styles/globals.css"
+import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
@@ -27,10 +27,10 @@ function MyApp({ Component, pageProps }) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-          <Component {...pageProps} />
+        <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>
   );
 }
 
-export default MyApp
+export default MyApp;
