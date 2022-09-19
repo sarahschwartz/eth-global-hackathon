@@ -44,7 +44,7 @@ export default function Step4() {
           <h2 className="text-center text-3xl font-bold leading-8 tracking-tight text-stone-900 sm:text-4xl">
             Invite your homies
           </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-500">
+          <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-600">
             Delight your Lens followers by sending them NFTs, or digital
             collectibles, that act as keys to your homebase.
           </p>
@@ -56,7 +56,7 @@ export default function Step4() {
                   {followers.map((follower) => (
                     <div
                       key={follower.wallet.address}
-                      className="relative flex items-center space-x-3 rounded-lg border border-stone-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-stone-400"
+                      className="relative flex items-center space-x-3 rounded-lg border border-stone-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 hover:border-stone-400"
                     >
                       <div className="flex-shrink-0">
                         {follower.wallet.defaultProfile.picture &&
@@ -82,7 +82,7 @@ export default function Step4() {
                           <p className="font-medium text-stone-900">
                             {follower.wallet.defaultProfile.handle}
                           </p>
-                          <p className="text-sm text-stone-500">
+                          <p className="text-sm text-emerald-600">
                             {follower.wallet.defaultProfile.handle}
                           </p>
                         </a>
@@ -130,7 +130,7 @@ export default function Step4() {
             <div className="text-center">
               <button
                 type="button"
-                className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
               >
                 Go to my homebase
               </button>

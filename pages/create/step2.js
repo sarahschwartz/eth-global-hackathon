@@ -38,7 +38,7 @@ export default function Step2() {
           <h2 className="text-center text-3xl font-bold leading-8 tracking-tight text-stone-900 sm:text-4xl">
             Create your Lens profile
           </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-500">
+          <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-600">
             Join the user-owned, decentralized web and grow your roots with
             Lens.
           </p>
@@ -62,7 +62,7 @@ export default function Step2() {
                 </span>
                 <button
                   type="button"
-                  className="rounded-md border border-stone-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-stone-700 shadow-sm hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="rounded-md border border-stone-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-stone-700 shadow-sm hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                 >
                   Upload
                 </button>
@@ -85,14 +85,14 @@ export default function Step2() {
                     autoComplete="username"
                     value={lensHandle}
                     onChange={(e) => setLensHandle(e.target.value)}
-                    className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-stone-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-stone-300 px-3 py-2 focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                   />
                 </div>
               </div>
               <div className="text-center">
                 <button
                   type="submit"
-                  className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="inline-flex items-center rounded-md border border-transparent bg-emerald-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                 >
                   Create Lens profile
                 </button>

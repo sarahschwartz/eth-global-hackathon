@@ -31,7 +31,7 @@ export default function Home() {
             <h1 className="text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl md:text-6xl">
               <span className="block">Homebase for you and your fans</span>
             </h1>
-            <p className="mx-auto mt-3 max-w-md text-base text-stone-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
+            <p className="mx-auto mt-3 max-w-md text-base text-stone-600 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
               Connect with your followers from all corners of the decentralized
               web in one place. Build a space where you can nurture deeper
               relationships with your fans.
@@ -41,7 +41,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => router.push("/create/step1")}
-                  className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="inline-flex items-center rounded-md border border-transparent bg-emerald-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                 >
                   Get started
                 </button>

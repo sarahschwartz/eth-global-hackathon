@@ -26,7 +26,7 @@ export default function Step3() {
           <h2 className="text-center text-3xl font-bold leading-8 tracking-tight text-stone-900 sm:text-4xl">
             Make your homebase cozy
           </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-500">
+          <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-600">
             Dropping some alpha? Sharing your works in progress? Releasing
             exclusive bonus content? Let your fans know what to expect when they
             come chill at your homebase.
@@ -48,7 +48,7 @@ export default function Step3() {
                     type="text"
                     name="path"
                     id="path"
-                    className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-stone-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-stone-300 focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -65,7 +65,7 @@ export default function Step3() {
                     id="about"
                     name="about"
                     rows={3}
-                    className="block w-full rounded-md border-stone-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full rounded-md border-stone-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                     defaultValue={""}
                   />
                 </div>
@@ -90,7 +90,7 @@ export default function Step3() {
                   </span>
                   <button
                     type="button"
-                    className="ml-5 rounded-md border border-stone-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-stone-700 shadow-sm hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="ml-5 rounded-md border border-stone-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-stone-700 shadow-sm hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                   >
                     Change
                   </button>
@@ -123,7 +123,7 @@ export default function Step3() {
                     <div className="flex text-sm text-stone-600">
                       <label
                         htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
+                        className="relative cursor-pointer rounded-md bg-white font-medium text-emerald-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 hover:text-emerald-500"
                       >
                         <span>Upload a file</span>
                         <input
@@ -145,7 +145,7 @@ export default function Step3() {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                 >
                   Continue
                 </button>

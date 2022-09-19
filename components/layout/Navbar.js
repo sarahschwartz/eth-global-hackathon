@@ -15,23 +15,21 @@ export default function Navbar() {
 
   return (
     mounted && (
-      <header className="border-b-2 border-stone-100">
+      <header>
         <nav
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
           aria-label="Top"
         >
-          <div className="w-full py-6 flex flex-wrap items-center justify-between border-b border-indigo-500 lg:border-none">
+          <div className="w-full py-6 flex flex-wrap items-center justify-between">
             <div className="flex items-center">
               <Link href="/">
-                <a>Homebase</a>
+                <a className="text-xl text-emerald-700 font-medium">
+                  🏡 <span className="sr-only sm:not-sr-only">Homebase</span>
+                </a>
               </Link>
             </div>
             <div className="ml-10 space-x-4 flex items-center">
-              {address ? (
-                <p className="text-ellipsis overflow-hidden">{address}</p>
-              ) : (
-                <ConnectButton />
-              )}
+              <ConnectButton />
             </div>
           </div>
         </nav>

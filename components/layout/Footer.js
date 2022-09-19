@@ -3,10 +3,10 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t-2 border-stone-100">
+    <footer>
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
         <div className="flex justify-center space-x-6 md:order-2">
-          <a href="#" className="text-stone-400 hover:text-stone-500">
+          <a href="#" className="text-stone-600 hover:text-stone-700">
             <span className="sr-only">GitHub</span>
             <svg
               className="h-6 w-6"
@@ -23,7 +23,7 @@ export default function Footer() {
           </a>
         </div>
         <div className="mt-8 md:mt-0 md:order-1">
-          <p className="text-center text-base text-stone-400">
+          <p className="text-center text-base text-stone-600">
             &copy; 2022 Homebase
           </p>
         </div>
