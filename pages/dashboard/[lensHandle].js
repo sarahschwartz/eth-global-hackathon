@@ -6,6 +6,7 @@ import DashboardLocks from "../../components/DashboardLocks";
 import CreateLock from "../../components/CreateLock";
 import { getLocksByUser } from "../../utils/unlockQueries";
 import Layout from "../../components/layout/Layout";
+import CreateLensPost from "../../components/CreateLensPost";
 
 export default function Dashboard() {
   const [profile, setProfile] = useState();
@@ -51,12 +52,14 @@ export default function Dashboard() {
     <Layout>
       {mounted && (
         <div className="p-8">
-          {isUser && (
+          {isUser && profile && (
             <div>
               <h1 className="text-3xl font-bold underline">
                 Creator Dashboard
               </h1>
-              {profile && <div> {profile.handle}</div>}
+              <div> {profile.handle}</div>
+
+              <CreateLensPost profile={profile} locks={locks}/>
 
               {!showCreateLock && (
                 <button

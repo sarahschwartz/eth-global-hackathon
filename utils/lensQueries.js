@@ -723,3 +723,45 @@ export const getFollowers = async (profileId) => {
 
   return response;
 };
+
+
+const CREATE_NEW_POST = `
+mutation($request: CreatePublicPostRequest!) {
+  createPostTypedData(request: $request) {
+    id
+    expiresAt
+    typedData {
+      types {
+        PostWithSig {
+          name
+          type
+        }
+      }
+      domain {
+        name
+        chainId
+        version
+        verifyingContract
+      }
+      value {
+        nonce
+        deadline
+        profileId
+        contentURI
+        collectModule
+        collectModuleInitData
+        referenceModule
+        referenceModuleInitData
+      }
+    }
+  }
+}`
+
+export const createNewPost = (request) => {
+  return apolloClient.mutate({
+    mutation: gql(CREATE_NEW_POST),
+    variables: {
+      request,
+    },
+  });
+};
