@@ -725,18 +725,18 @@ export const getFollowers = async (profileId) => {
 };
 
 
-const CREATE_NEW_POST = `
-mutation($request: CreatePublicPostRequest!) {
-  createPostTypedData(request: $request) {
-    id
-    expiresAt
-    typedData {
-      types {
-        PostWithSig {
-          name
-          type
+const CREATE_POST_TYPED_DATA = `
+  mutation($request: CreatePublicPostRequest!) { 
+    createPostTypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        types {
+          PostWithSig {
+            name
+            type
+          }
         }
-      }
       domain {
         name
         chainId
@@ -754,14 +754,15 @@ mutation($request: CreatePublicPostRequest!) {
         referenceModuleInitData
       }
     }
-  }
-}`
+   }
+ }
+`
 
-export const createNewPost = (request) => {
-  return apolloClient.mutate({
-    mutation: gql(CREATE_NEW_POST),
+export const createPostTypedData = (createPostTypedDataRequest) => {
+   return apolloClient.mutate({
+    mutation: gql(CREATE_POST_TYPED_DATA),
     variables: {
-      request,
+      request: createPostTypedDataRequest
     },
-  });
-};
+  })
+}

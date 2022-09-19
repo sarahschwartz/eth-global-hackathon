@@ -1,19 +1,23 @@
 import { useState } from "react";
-import { createNewPost } from "../utils/lensQueries";
+import { createPostTypedData } from "../utils/lensQueries";
+import { signedTypeData, splitSignature } from "../utils/ethers-service";
+import { lensHub } from "../utils/lensHub";
 
 export default function CreateLensPost({ profile, locks }) {
   const [message, setMessage] = useState("");
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted, setSubmitted] = useState(false);
 
-  const inactiveClasses = "cursor-pointer px-6 py-2 border border-blue-500 rounded-full"
-  const activeClasses = "cursor-pointer px-6 py-2 border bg-blue-500 text-white rounded-full"
+  const inactiveClasses =
+    "cursor-pointer px-6 py-2 border border-blue-500 rounded-full";
+  const activeClasses =
+    "cursor-pointer px-6 py-2 border bg-blue-500 text-white rounded-full";
 
   const uploadContent = async () => {
     const contentJson = {
       type: "post",
-      profile_id: profile.id.toNumber(),
+      profile_id: profile.id,
       handle: profile.handle,
       message,
       timestamp: new Date().toISOString(),
@@ -46,35 +50,76 @@ export default function CreateLensPost({ profile, locks }) {
 
     try {
       const CID = await uploadContent();
-
-      const request = {
-        profileId: profile.id,
-        contentURI: `https://ipfs.io/ipfs/${CID}/data.json`,
-        collectModule: {
-          revertCollectModule: true,
-        },
-        referenceModule: {
-          followerOnlyReferenceModule: false,
-        },
-      };
-
-      const resp = await createNewPost(request);
-      console.log("POSTED!", resp);
+      await createPost(CID);
     } catch (error) {
       console.log("ERROR", error);
     }
   };
 
+  const createPost = async (CID) => {
+    const createPostRequest = {
+      profileId: profile.id,
+      contentURI: "ipfs://" + CID,
+      collectModule: {
+        revertCollectModule: true,
+      },
+      referenceModule: {
+        followerOnlyReferenceModule: false
+      }
+    };
+          
+    const result = await createPostTypedData(createPostRequest);
+    const typedData = result.data.createPostTypedData.typedData;
+    
+    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+    const { v, r, s } = splitSignature(signature);
+    console.log("POST INPUTS")
+    console.log("ProfileId", typedData.value.profileId)
+    console.log("contentURI", typedData.value.contentURI)
+    console.log("collectModule", typedData.value.collectModule)
+    console.log("collectModuleInitData", typedData.value.collectModuleInitData)
+    console.log("referenceModule", typedData.value.referenceModule)
+    console.log("referenceModuleInitData", typedData.value.referenceModuleInitData)
+    console.log("v", v)
+    console.log("r", r)
+    console.log("s", s)
+    console.log("deadline", typedData.value.deadline)
+
+    
+    // const contract = lensHub();
+    // const txn = await contract.postWithSig({
+    //   profileId: typedData.value.profileId,
+    //   contentURI: typedData.value.contentURI,
+    //   collectModule: typedData.value.collectModule,
+    //   collectModuleInitData: typedData.value.collectModuleInitData,
+    //   referenceModule: typedData.value.referenceModule,
+    //   referenceModuleInitData: typedData.value.referenceModuleInitData,
+    //   sig: {
+    //     v,
+    //     r,
+    //     s,
+    //     deadline: typedData.value.deadline,
+    //   },
+    // });
+    // console.log("DONE!", txn);
+    // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
+    // you can look at how to know when its been indexed here: 
+    //   - https://docs.lens.dev/docs/has-transaction-been-indexed
+  }
+
   const handleLockInput = (address) => {
     if (lockAddresses.includes(address)) {
       let newLocks = lockAddresses.filter((addy) => {
-        addy !== address;
+        return addy !== address;
       });
-      console.log("NEW LOCKS", newLocks);
       setLockAddresses(newLocks);
     } else {
-      setLockAddresses(...lockAddresses, address);
+      setLockAddresses([...lockAddresses, address]);
     }
+  };
+
+  const isLockActive = (address) => {
+    return lockAddresses.includes(address) ? true : false;
   };
 
   return (
@@ -96,24 +141,43 @@ export default function CreateLensPost({ profile, locks }) {
 
           <div>
             <label className="block">Visibility</label>
-            <input className={privatePost ? inactiveClasses : activeClasses} type="button" onClick={() => {setPrivatePost(false)}} value="Public"/>
-            <input className={privatePost ? activeClasses : inactiveClasses} type="button" onClick={() => {setPrivatePost(true)}} value="Private"/>
+            <input
+              className={privatePost ? inactiveClasses : activeClasses}
+              type="button"
+              onClick={() => {
+                setPrivatePost(false);
+              }}
+              value="Public"
+            />
+            <input
+              className={privatePost ? activeClasses : inactiveClasses}
+              type="button"
+              onClick={() => {
+                setPrivatePost(true);
+              }}
+              value="Private"
+            />
           </div>
 
           {privatePost && (
             <div>
-              {locks.map((lock) => {
-                <div>
-                  <label>{lock.name}</label>
+              <label>Locks</label>
+              {locks.map((lock) => (
+                <div key={lock.id}>
                   <input
                     type="button"
-                    className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+                    value={`${lock.name} - ${lock.address}`}
+                    className={
+                      isLockActive(lock.address)
+                        ? activeClasses
+                        : inactiveClasses
+                    }
                     onClick={() => {
                       handleLockInput(lock.address);
                     }}
                   />
-                </div>;
-              })}
+                </div>
+              ))}
             </div>
           )}
 

@@ -18,6 +18,8 @@ const authLink = new ApolloLink((operation, forward) => {
   // Retrieve the authorization token from local storage.
   // if your using node etc you have to handle your auth different
   const token = localStorage.getItem("lens_auth_token");
+
+  console.log("TOKEEN HEERE", token)
   // Use the setContext method to set the HTTP headers.
   if (token !== "undefined") {
     operation.setContext({
@@ -34,10 +36,8 @@ const authLink = new ApolloLink((operation, forward) => {
 export const apolloClient = new ApolloClient({
   link: ApolloLink.split(
     (operation) => operation.getContext().clientName === "unlock-subgraph",
-    // the string "third-party" can be anything you want,
-    // we will use it in a bit
-    unlockSubgraphHttpLink, // <= apollo will send to this if clientName is "third-party"
-    lensAPIHttpLink // <= otherwise will send to this
+    unlockSubgraphHttpLink, // <= apollo will send to this if clientName is "unlock-subgraph"
+    authLink.concat(lensAPIHttpLink) // <= otherwise will send to this
   ),
   cache: new InMemoryCache(),
 });
