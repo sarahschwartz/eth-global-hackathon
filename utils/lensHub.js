@@ -1,5 +1,4 @@
 import { getSigner } from './ethers-service.js';
-// import { LENS_HUB_ABI, LENS_HUB_CONTRACT_ADDRESS } from "./lens-config"
 import { ethers } from 'ethers';
 import LENS_HUB_ABI from "./lensABI.json"
 

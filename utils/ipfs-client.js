@@ -1,9 +1,7 @@
 import { create } from 'ipfs-http-client';
 
-const projectId = "2F34oXA0uNqA5zrHfbOmyrWd446"
-const secret = "d27892ed0bce5a1e6f40918720930dd4"
-// const projectId = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
-// const secret = process.env.NEXT_PUBLIC_INFURA_SECRET;
+const projectId = process.env.NEXT_PUBLIC_INFURA_IPFS_PROJECT_ID;
+const secret = process.env.NEXT_PUBLIC_INFURA_IPFS_SECRET;
 
 if (!projectId || !secret) {
   throw new Error('Must define INFURA_PROJECT_ID and INFURA_SECRET in the .env to run this');

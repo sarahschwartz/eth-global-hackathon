@@ -2,9 +2,14 @@ import { useState } from "react";
 import { createPostTypedData } from "../utils/lensQueries";
 import { signedTypeData, splitSignature } from "../utils/ethers-service";
 import { lensHub } from "../utils/lensHub";
+import { v4 as uuidv4 } from "uuid";
+import { uploadIpfs } from "../utils/ipfs-client";
+import pollUntilIndexed from "../utils/pollUntilIndexed";
 
 export default function CreateLensPost({ profile, locks }) {
-  const [message, setMessage] = useState("");
+  const [content, setContent] = useState("");
+  const [postName, setPostName] = useState("");
+  const [description, setDescription] = useState("");
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
   const [submitted, setSubmitted] = useState(false);
@@ -14,100 +19,137 @@ export default function CreateLensPost({ profile, locks }) {
   const activeClasses =
     "cursor-pointer px-6 py-2 border bg-blue-500 text-white rounded-full";
 
-  const uploadContent = async () => {
-    const contentJson = {
-      type: "post",
-      profile_id: profile.id,
-      handle: profile.handle,
-      message,
-      timestamp: new Date().toISOString(),
-      private: privatePost,
-      lockAddresses,
+  const createPost = async () => {
+    const profileId = profile.id;
+    if (!profileId) {
+      throw new Error("Must define PROFILE_ID in the .env to run this");
+    }
+
+    const metadata = {
+      version: "1.0.0",
+      metadata_id: uuidv4(),
+      appId: "homebase420",
+      description,
+      content,
+      name: postName,
+      media: [],
+      attributes: [],
     };
 
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contentJson),
-      });
-      if (response.status !== 200) {
-        alert("Oops! Something went wrong. Please refresh and try again.");
-      } else {
-        console.log("Form successfully submitted!");
-        const responseJSON = await response.json();
-        return responseJSON.cid;
-      }
-    } catch (error) {
-      alert(
-        `Oops! Something went wrong. Please refresh and try again. Error ${error}`
-      );
-    }
+    const ipfsResult = await uploadIpfs(metadata);
+    console.log("create post: ipfs result", ipfsResult);
+
+    // hard coded to make the code example clear
+    const createPostRequest = {
+      profileId,
+      contentURI: "ipfs://" + ipfsResult.path,
+      collectModule: {
+        // feeCollectModule: {
+        //   amount: {
+        //     currency: currencies.enabledModuleCurrencies.map(
+        //       (c: any) => c.address
+        //     )[0],
+        //     value: '0.000001',
+        //   },
+        //   recipient: address,
+        //   referralFee: 10.5,
+        // },
+        // revertCollectModule: true,
+        freeCollectModule: { followerOnly: true },
+        // limitedFeeCollectModule: {
+        //   amount: {
+        //     currency: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
+        //     value: '2',
+        //   },
+        //   collectLimit: '20000',
+        //   recipient: '0x3A5bd1E37b099aE3386D13947b6a90d97675e5e3',
+        //   referralFee: 0,
+        // },
+      },
+      referenceModule: {
+        followerOnlyReferenceModule: false,
+      },
+    };
+    console.log("CREATE POST REQUEST", createPostRequest);
+
+    const result = await createPostTypedData(createPostRequest);
+    console.log("create post: createPostTypedData", result);
+
+    const typedData = result.data.createPostTypedData.typedData;
+    console.log("create post: typedData", typedData);
+
+    const signature = await signedTypeData(
+      typedData.domain,
+      typedData.types,
+      typedData.value
+    );
+    console.log("create post: signature", signature);
+
+    const { v, r, s } = splitSignature(signature);
+    const contract = lensHub();
+
+    const tx = await contract.postWithSig({
+      profileId: typedData.value.profileId,
+      contentURI: typedData.value.contentURI,
+      collectModule: typedData.value.collectModule,
+      collectModuleInitData: typedData.value.collectModuleInitData,
+      referenceModule: typedData.value.referenceModule,
+      referenceModuleInitData: typedData.value.referenceModuleInitData,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      },
+    });
+    console.log("create post: tx hash", tx.hash);
+
+    const indexedResult = await pollUntilIndexed(tx.hash);
+    console.log("tx", tx);
+
+    console.log("create post: profile has been indexed", result);
+
+    const logs = indexedResult.txReceipt.logs;
+
+    console.log("create post: logs", logs);
+
+    // const topicId = utils.id(
+    //   "PostCreated(uint256,uint256,string,address,bytes,address,bytes,uint256)"
+    // );
+    // console.log("topicid we care about", topicId);
+
+    // const profileCreatedLog = logs.find((l) => l.topics[0] === topicId);
+    // console.log("create post: created log", profileCreatedLog);
+
+    // let profileCreatedEventLog = profileCreatedLog.topics;
+    // console.log("create post: created event logs", profileCreatedEventLog);
+
+    // const publicationId = utils.defaultAbiCoder.decode(
+    //   ["uint256"],
+    //   profileCreatedEventLog[2]
+    // )[0];
+
+    // console.log(
+    //   "create post: contract publication id",
+    //   BigNumber.from(publicationId).toHexString()
+    // );
+    // console.log(
+    //   "create post: internal publication id",
+    //   profileId + "-" + BigNumber.from(publicationId).toHexString()
+    // );
+
+    // return result.data;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const CID = await uploadContent();
-      await createPost(CID);
+      setSubmitted(true)
+      await createPost();
     } catch (error) {
       console.log("ERROR", error);
     }
   };
-
-  const createPost = async (CID) => {
-    const createPostRequest = {
-      profileId: profile.id,
-      contentURI: "ipfs://" + CID,
-      collectModule: {
-        revertCollectModule: true,
-      },
-      referenceModule: {
-        followerOnlyReferenceModule: false
-      }
-    };
-    console.log("CREATE POST REQUEST", createPostRequest)
-
-          
-    // const result = await createPostTypedData(createPostRequest);
-    // const typedData = result.data.createPostTypedData.typedData;
-    
-    // const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
-    // const { v, r, s } = splitSignature(signature);
-    // console.log("POST INPUTS")
-    // console.log("ProfileId", typedData.value.profileId)
-    // console.log("contentURI", typedData.value.contentURI)
-    // console.log("collectModule", typedData.value.collectModule)
-    // console.log("collectModuleInitData", typedData.value.collectModuleInitData)
-    // console.log("referenceModule", typedData.value.referenceModule)
-    // console.log("referenceModuleInitData", typedData.value.referenceModuleInitData)
-    // console.log("v", v)
-    // console.log("r", r)
-    // console.log("s", s)
-    // console.log("deadline", typedData.value.deadline)
-
-    
-    // const contract = lensHub();
-    // const txn = await contract.postWithSig({
-    //   profileId: typedData.value.profileId,
-    //   contentURI: typedData.value.contentURI,
-    //   collectModule: typedData.value.collectModule,
-    //   collectModuleInitData: typedData.value.collectModuleInitData,
-    //   referenceModule: typedData.value.referenceModule,
-    //   referenceModuleInitData: typedData.value.referenceModuleInitData,
-    //   sig: {
-    //     v,
-    //     r,
-    //     s,
-    //     deadline: typedData.value.deadline,
-    //   },
-    // });
-    // console.log("DONE!", txn);
-    // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
-    // you can look at how to know when its been indexed here: 
-    //   - https://docs.lens.dev/docs/has-transaction-been-indexed
-  }
 
   const handleLockInput = (address) => {
     if (lockAddresses.includes(address)) {
@@ -129,14 +171,39 @@ export default function CreateLensPost({ profile, locks }) {
       <h3 className="text-2xl pb-4">Create a new post</h3>
       {!submitted && (
         <form onSubmit={handleSubmit}>
+
           <div>
-            <label>Message</label>
+            <label>Content</label>
             <textarea
               type="text"
               className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
               required
               onChange={(e) => {
-                setMessage(e.target.value);
+                setContent(e.target.value);
+              }}
+            />
+          </div>
+
+          <div>
+            <label>Name</label>
+            <input
+              type="text"
+              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+              required
+              onChange={(e) => {
+                setPostName(e.target.value);
+              }}
+            />
+          </div>
+
+          <div>
+            <label>Description</label>
+            <input
+              type="text"
+              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+              required
+              onChange={(e) => {
+                setDescription(e.target.value);
               }}
             />
           </div>
