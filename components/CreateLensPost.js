@@ -86,22 +86,22 @@ export default function CreateLensPost({ profile, locks }) {
     console.log("deadline", typedData.value.deadline)
 
     
-    // const contract = lensHub();
-    // const txn = await contract.postWithSig({
-    //   profileId: typedData.value.profileId,
-    //   contentURI: typedData.value.contentURI,
-    //   collectModule: typedData.value.collectModule,
-    //   collectModuleInitData: typedData.value.collectModuleInitData,
-    //   referenceModule: typedData.value.referenceModule,
-    //   referenceModuleInitData: typedData.value.referenceModuleInitData,
-    //   sig: {
-    //     v,
-    //     r,
-    //     s,
-    //     deadline: typedData.value.deadline,
-    //   },
-    // });
-    // console.log("DONE!", txn);
+    const contract = lensHub();
+    const txn = await contract.postWithSig({
+      profileId: typedData.value.profileId,
+      contentURI: typedData.value.contentURI,
+      collectModule: typedData.value.collectModule,
+      collectModuleInitData: typedData.value.collectModuleInitData,
+      referenceModule: typedData.value.referenceModule,
+      referenceModuleInitData: typedData.value.referenceModuleInitData,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      },
+    });
+    console.log("DONE!", txn);
     // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
     // you can look at how to know when its been indexed here: 
     //   - https://docs.lens.dev/docs/has-transaction-been-indexed

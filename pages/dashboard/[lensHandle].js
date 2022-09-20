@@ -7,6 +7,7 @@ import CreateLock from "../../components/CreateLock";
 import { getLocksByUser } from "../../utils/unlockQueries";
 import Layout from "../../components/layout/Layout";
 import CreateLensPost from "../../components/CreateLensPost";
+import HackLensPost from "../../components/HackLensPost";
 
 export default function Dashboard() {
   const [profile, setProfile] = useState();
@@ -60,6 +61,8 @@ export default function Dashboard() {
               <div> {profile.handle}</div>
 
               <CreateLensPost profile={profile} locks={locks}/>
+              <br/><br/>
+              <HackLensPost profile={profile}/>
 
               {!showCreateLock && (
                 <button
