@@ -67,41 +67,43 @@ export default function CreateLensPost({ profile, locks }) {
         followerOnlyReferenceModule: false
       }
     };
+    console.log("CREATE POST REQUEST", createPostRequest)
+
           
-    const result = await createPostTypedData(createPostRequest);
-    const typedData = result.data.createPostTypedData.typedData;
+    // const result = await createPostTypedData(createPostRequest);
+    // const typedData = result.data.createPostTypedData.typedData;
     
-    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
-    const { v, r, s } = splitSignature(signature);
-    console.log("POST INPUTS")
-    console.log("ProfileId", typedData.value.profileId)
-    console.log("contentURI", typedData.value.contentURI)
-    console.log("collectModule", typedData.value.collectModule)
-    console.log("collectModuleInitData", typedData.value.collectModuleInitData)
-    console.log("referenceModule", typedData.value.referenceModule)
-    console.log("referenceModuleInitData", typedData.value.referenceModuleInitData)
-    console.log("v", v)
-    console.log("r", r)
-    console.log("s", s)
-    console.log("deadline", typedData.value.deadline)
+    // const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+    // const { v, r, s } = splitSignature(signature);
+    // console.log("POST INPUTS")
+    // console.log("ProfileId", typedData.value.profileId)
+    // console.log("contentURI", typedData.value.contentURI)
+    // console.log("collectModule", typedData.value.collectModule)
+    // console.log("collectModuleInitData", typedData.value.collectModuleInitData)
+    // console.log("referenceModule", typedData.value.referenceModule)
+    // console.log("referenceModuleInitData", typedData.value.referenceModuleInitData)
+    // console.log("v", v)
+    // console.log("r", r)
+    // console.log("s", s)
+    // console.log("deadline", typedData.value.deadline)
 
     
-    const contract = lensHub();
-    const txn = await contract.postWithSig({
-      profileId: typedData.value.profileId,
-      contentURI: typedData.value.contentURI,
-      collectModule: typedData.value.collectModule,
-      collectModuleInitData: typedData.value.collectModuleInitData,
-      referenceModule: typedData.value.referenceModule,
-      referenceModuleInitData: typedData.value.referenceModuleInitData,
-      sig: {
-        v,
-        r,
-        s,
-        deadline: typedData.value.deadline,
-      },
-    });
-    console.log("DONE!", txn);
+    // const contract = lensHub();
+    // const txn = await contract.postWithSig({
+    //   profileId: typedData.value.profileId,
+    //   contentURI: typedData.value.contentURI,
+    //   collectModule: typedData.value.collectModule,
+    //   collectModuleInitData: typedData.value.collectModuleInitData,
+    //   referenceModule: typedData.value.referenceModule,
+    //   referenceModuleInitData: typedData.value.referenceModuleInitData,
+    //   sig: {
+    //     v,
+    //     r,
+    //     s,
+    //     deadline: typedData.value.deadline,
+    //   },
+    // });
+    // console.log("DONE!", txn);
     // 0x64464dc0de5aac614a82dfd946fc0e17105ff6ed177b7d677ddb88ec772c52d3
     // you can look at how to know when its been indexed here: 
     //   - https://docs.lens.dev/docs/has-transaction-been-indexed

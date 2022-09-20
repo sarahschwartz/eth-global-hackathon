@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 import { signedTypeData, splitSignature } from '../utils/ethers-service';
 import { lensHub } from '../utils/lensHub';
 import { v4 as uuidv4 } from 'uuid';
+import { uploadIpfs } from "../utils/ipfs-client";
 
 const CREATE_POST_TYPED_DATA = `
   mutation($request: CreatePublicPostRequest!) { 
@@ -47,26 +48,30 @@ const createPostTypedData = (createPostTypedDataRequest) => {
   });
 };
 
-const uploadContent = async (content) => {
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(content),
-      });
-      if (response.status !== 200) {
-        alert("Oops! Something went wrong. Please refresh and try again.");
-      } else {
-        console.log("Form successfully submitted!");
-        const responseJSON = await response.json();
-        return responseJSON.cid;
-      }
-    } catch (error) {
-      alert(
-        `Oops! Something went wrong. Please refresh and try again. Error ${error}`
-      );
-    }
-  };
+// const uploadContent = async (content) => {
+//     try {
+//       const response = await fetch("/api/upload", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(content),
+//       });
+//       if (response.status !== 200) {
+//         alert("Oops! Something went wrong. Please refresh and try again.");
+//       } else {
+//         console.log("Form successfully submitted!");
+//         const responseJSON = await response.json();
+//         return responseJSON.cid;
+//       }
+//     } catch (error) {
+//       alert(
+//         `Oops! Something went wrong. Please refresh and try again. Error ${error}`
+//       );
+//     }
+//   };
+
+  const handleUUID = () => {
+    console.log(uuidv4())
+  }
 
 const createPost = async (profile) => {
   const profileId = profile.id
@@ -74,30 +79,70 @@ const createPost = async (profile) => {
     throw new Error('Must define PROFILE_ID in the .env to run this');
   }
 
-  const CID = await uploadContent({
-    version: '1.0.0',
-    metadata_id: uuidv4(),
-    description: 'Description for my first post!',
-    content: 'Content for my first post!',
-    external_url: null,
-    image: null,
-    imageMimeType: null,
-    name: 'Name of my first post!',
-    attributes: [],
-    media: [
-      // {
-      //   item: 'https://scx2.b-cdn.net/gfx/news/hires/2018/lion.jpg',
-      //   // item: 'https://assets-global.website-files.com/5c38aa850637d1e7198ea850/5f4e173f16b537984687e39e_AAVE%20ARTICLE%20website%20main%201600x800.png',
-      //   type: 'image/jpeg',
-      // },
-    ],
-    appId: 'testing123',
-  });
+//   const metadatav11 = {
+//   "metadatav1": {
+//     "version": "1.0.0",
+//     "metadata_id": "42591a3d-dbf8-43f8-b765-a35523607c9d",
+//     "appId": "homebase420",
+//     "description": "My description",
+//     "content": "Hi! This is my first post!",
+//     "name": "First Post",
+//     "media": [],
+//     "attributes": []
+//   }
+// }
+
+const metadatav12 = {
+      "version": "1.0.0",
+      "metadata_id": "42591a3d-dbf8-43f8-b765-a35523607c9d",
+      "appId": "homebase420",
+      "description": "My description",
+      "content": "Hi! This is my first post! v1",
+      "name": "First Post v1",
+      "media": [],
+      "attributes": []
+    }
+
+//   const metadatav21 = {
+//     "metadatav2": {
+//       "version": "2.0.0",
+//       "metadata_id": uuidv4(),
+//       "attributes": [],
+//       "locale": "en",
+//       "mainContentFocus": "TEXT_ONLY",
+//       "name": "First Post!",
+//       "description": "My description",
+//       "content": "Hi! This is my first post!",
+//       "media": [],
+//       "external_url": null,
+//       "image": null,
+//       "appId": "homebase420"
+//     }
+//   }
+
+//   const metadatav22 = {
+//       "version": "2.0.0",
+//       "metadata_id": uuidv4(),
+//       "attributes": [],
+//       "locale": "en",
+//       "mainContentFocus": "TEXT_ONLY",
+//       "name": "First Post!",
+//       "description": "This is my description!",
+//       "content": "This is my first post!!",
+//       "media": [],
+//       "external_url": null,
+//       "image": null,
+//       "appId": "homebase420"
+//     }
+
+//   const CID = await uploadContent(metadatav12);
+  const ipfsResult = await uploadIpfs(metadatav12);
+  console.log('create post: ipfs result', ipfsResult);
 
   // hard coded to make the code example clear
   const createPostRequest = {
     profileId,
-    contentURI: "ipfs://" + CID,
+    contentURI: 'ipfs://' + ipfsResult.path,
     collectModule: {
       // feeCollectModule: {
       //   amount: {
@@ -196,6 +241,7 @@ export default function HackLensPost({profile}){
     return(
         <div>
             <button onClick={handleCreatePost}>Create Post</button>
+            <button onClick={handleUUID}>UUID</button>
         </div>
     )
 }

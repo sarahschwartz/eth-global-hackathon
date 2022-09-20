@@ -17,6 +17,7 @@
     "ethers": "^5.7.0",
     "firebase": "^9.9.4",
     "graphql": "^16.6.0",
+    "ipfs-http-client": "^58.0.0",
     "next": "12.3.0",
     "omit-deep": "^0.3.0",
     "react": "18.2.0",
