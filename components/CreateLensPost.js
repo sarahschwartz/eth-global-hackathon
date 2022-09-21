@@ -5,6 +5,8 @@ import { lensHub } from "../utils/lensHub";
 import { v4 as uuidv4 } from "uuid";
 import { uploadIpfs } from "../utils/ipfs-client";
 import pollUntilIndexed from "../utils/pollUntilIndexed";
+import { db } from "../firebaseConfig";
+import { addDoc, collection } from "firebase/firestore";
 
 export default function CreateLensPost({ profile, locks }) {
   const [content, setContent] = useState("");
@@ -12,7 +14,7 @@ export default function CreateLensPost({ profile, locks }) {
   const [description, setDescription] = useState("");
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [posting, setPosting] = useState(false);
 
   const inactiveClasses =
     "cursor-pointer px-6 py-2 border border-blue-500 rounded-full";
@@ -24,36 +26,45 @@ export default function CreateLensPost({ profile, locks }) {
     if (!profileId) {
       throw new Error("Must define PROFILE_ID in the .env to run this");
     }
+    
+    
+    const attributes = [
+     {
+       "displayType": "string",
+       "traitType": "visibility",
+       "value": privatePost ? "private" : "public"
+     }
+   ]
+  if(privatePost){
+    const docRef = await addDoc(collection(db, "locks"), {
+      content,
+      lockAddresses,
+      ownerAddress: profile.ownedBy
+    });
+    console.log("Document written with ID: ", docRef.id);
 
 
-   const attributes = [
-    {
-      "displayType": "string",
-      "traitType": "visibility",
-      "value": privatePost ? "private" : "public"
-    },
-    {
-      "displayType": "string",
-      "traitType": "lockAddress",
-      "value": "0x123456"
-    },
-    {
+    attributes.push({
       "displayType": "string",
       "traitType": "dbRef",
-      "value": "124323464"
-    }
-  ]
+      "value": docRef.id
+    })
+  }
+
+
 
     const metadata = {
       version: "1.0.0",
       metadata_id: uuidv4(),
       appId: "homebase420",
       description,
-      content,
+      content: privatePost ? "This content requires a Homebase key" : content,
       name: postName,
       media: [],
       attributes,
     };
+
+    console.log("METADATA", metadata)
 
     const ipfsResult = await uploadIpfs(metadata);
     console.log("create post: ipfs result", ipfsResult);
@@ -131,6 +142,7 @@ export default function CreateLensPost({ profile, locks }) {
     const logs = indexedResult.txReceipt.logs;
 
     console.log("create post: logs", logs);
+    
 
     // const topicId = utils.id(
     //   "PostCreated(uint256,uint256,string,address,bytes,address,bytes,uint256)"
@@ -157,13 +169,15 @@ export default function CreateLensPost({ profile, locks }) {
     //   profileId + "-" + BigNumber.from(publicationId).toHexString()
     // );
 
-    // return result.data;
+    setPosting(false);
+    alert('Success!')
+
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setSubmitted(true)
+      setPosting(true)
       await createPost();
     } catch (error) {
       console.log("ERROR", error);
@@ -188,7 +202,7 @@ export default function CreateLensPost({ profile, locks }) {
   return (
     <div className="py-8">
       <h3 className="text-2xl pb-4">Create a new post</h3>
-      {!submitted && (
+      {!posting && (
         <form onSubmit={handleSubmit}>
 
           <div>
@@ -277,7 +291,7 @@ export default function CreateLensPost({ profile, locks }) {
           </button>
         </form>
       )}
-      {submitted && <div>New post created!</div>}
+      {posting && <div>Posting....</div>}
     </div>
   );
 }
