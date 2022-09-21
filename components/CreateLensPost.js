@@ -30,7 +30,7 @@ export default function CreateLensPost({ profile, locks }) {
     {
       "displayType": "string",
       "traitType": "visibility",
-      "value": "private"
+      "value": privatePost ? "private" : "public"
     },
     {
       "displayType": "string",
