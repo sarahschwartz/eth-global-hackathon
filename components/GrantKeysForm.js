@@ -15,8 +15,8 @@ export default function GrantKeysForm({ lockAddress }) {
     await grantKeys(lockAddress, wallets, timestamp);
   };
   return (
-    <div>
-      <div>Grant keys to a list of wallet addresses</div>
+    <div className="pt-4">
+      <h3 className="text-xl underline">Grant keys</h3>
       <form onSubmit={handleSubmit}>
         <label>ETH address to send a key to:</label>
         <input

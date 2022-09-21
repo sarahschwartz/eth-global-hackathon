@@ -2,16 +2,12 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { ethers } from "ethers";
 import { getLockFromAddress, checkIfKeyOwner } from "../../utils/unlockQueries";
 import PurchaseKey from "../../components/PurchaseKey";
-import { getMaxKeys, getTotalSupply } from "../../utils/unlockFunctions";
-import LockContent from "../../components/LockContent";
+import LockDetails from "../../components/LockDetails";
 
 export default function LockPage() {
   const [lock, setLock] = useState();
-  const [maxKeys, setMaxKeys] = useState(null);
-  const [totalSupply, setTotalSupply] = useState(null);
   const [ownsKey, setOwnsKey] = useState(false);
   const router = useRouter();
   const { lockAddress } = router.query;
@@ -22,7 +18,6 @@ export default function LockPage() {
       async function fetchData() {
         await fetchLock();
         if (address) {
-          await handleGetMaxKeysAndTotalSupply();
           await handleCheckIfKeyOwner();
         }
       }
@@ -41,18 +36,7 @@ export default function LockPage() {
     }
   }
 
-  async function handleGetMaxKeysAndTotalSupply() {
-    let resp = await getMaxKeys(lockAddress);
-    if (resp) {
-      setMaxKeys(resp);
-      console.log("RESSSP", resp);
-    }
-    resp = await getTotalSupply(lockAddress);
-    if (resp) {
-      console.log("RESSSP", resp);
-      setTotalSupply(resp);
-    }
-  }
+
 
   async function handleCheckIfKeyOwner() {
     console.log("LOCK ADDRESS", lockAddress);
@@ -74,13 +58,10 @@ export default function LockPage() {
     <div>
       <ConnectButton />
       {lock && (
-        <div>
-          <h3 className="text-xl font-bold">{lock.name}</h3>
-          <p>Price: {ethers.utils.formatEther(lock.price)} MATIC</p>
-          {maxKeys && <div>Max Keys: {maxKeys}</div>}
-          {totalSupply !== null && <div>Total Supply: {totalSupply}</div>}
+        <div className="grid place-items-center mt-32">
+          <LockDetails lock={lock}/>
           {ownsKey ? (
-              <LockContent lockAddress={lockAddress} />
+              "You already own this key"
               ) : (
             <PurchaseKey lock={lock} />
           )}
