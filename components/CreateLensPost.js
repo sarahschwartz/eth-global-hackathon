@@ -25,6 +25,25 @@ export default function CreateLensPost({ profile, locks }) {
       throw new Error("Must define PROFILE_ID in the .env to run this");
     }
 
+
+   const attributes = [
+    {
+      "displayType": "string",
+      "traitType": "visibility",
+      "value": "private"
+    },
+    {
+      "displayType": "string",
+      "traitType": "lockAddress",
+      "value": "0x123456"
+    },
+    {
+      "displayType": "string",
+      "traitType": "dbRef",
+      "value": "124323464"
+    }
+  ]
+
     const metadata = {
       version: "1.0.0",
       metadata_id: uuidv4(),
@@ -33,7 +52,7 @@ export default function CreateLensPost({ profile, locks }) {
       content,
       name: postName,
       media: [],
-      attributes: [],
+      attributes,
     };
 
     const ipfsResult = await uploadIpfs(metadata);
