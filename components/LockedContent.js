@@ -1,19 +1,32 @@
-import { db } from "../firebaseConfig";
+import { db, storage } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { ref, getDownloadURL } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { checkIfKeyOwner, getLockFromAddress } from "../utils/unlockQueries";
+import LockedImages from "./LockedImages";
 
-export default function LockedContent({ dbRef }) {
+export default function LockedContent({ dbRef, imageRefs }) {
   const [content, setContent] = useState(null);
+  const [images, setImages] = useState([])
   const [isKeyOwner, setIsKeyOwner] = useState(false);
   const { address } = useAccount();
-
+  
   useEffect(() => {
     if (address && dbRef) {
       getContent();
     }
   }, [dbRef, address]);
+
+  async function getImages(ownerAddress){
+    imageRefs.forEach((imgRef) => {
+      getDownloadURL(ref(storage, `${ownerAddress}/${imgRef}`))
+    .then((url) => {
+      setImages([...images, url])
+    })
+
+    })
+  }
 
   async function getContent() {
     const docRef = doc(db, "locks", dbRef);
@@ -29,6 +42,9 @@ export default function LockedContent({ dbRef }) {
           if (data.ownerAddress.toLowerCase() === lockData.data.lock.owner) {
             setContent(data.content);
             setIsKeyOwner(true);
+            if(imageRefs && imageRefs.length > 0){
+              await getImages(data.ownerAddress)
+            }
             break;
           }
         }
@@ -38,7 +54,12 @@ export default function LockedContent({ dbRef }) {
 
   return (
     <div>
-      {isKeyOwner && content && address && <p className="text-blue-800">{content}</p>}
+      {isKeyOwner && content && address && (
+        <div>
+          <p className="text-blue-800">{content}</p>
+          {images && <LockedImages images={images} />}
+        </div>
+      )}
     </div>
   );
 }

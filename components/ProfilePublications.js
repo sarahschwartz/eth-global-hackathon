@@ -1,4 +1,4 @@
-import LockedContent from "./LockedContent";
+import ProfilePublication from "./ProfilePublication";
 
 // const mockPubs = [
 //   {
@@ -90,15 +90,7 @@ export default function ProfilePublications({ pubs }) {
     <div className="border-t-2 border-gray-100 my-8 py-8 flex flex-col space-y-8">
       {pubs.map((p, index) => (
         <div key={p.id}>
-          {p.__typename === "Post" && (
-            <div>
-              <p className="font-bold">{p.metadata.name}</p>
-              <p>{p.metadata.content}</p>
-              {p.metadata.attributes.length > 0 && p.metadata.attributes[0].traitType === "visibility" && p.metadata.attributes[0].value === "private" && <div>
-                <LockedContent dbRef={p.metadata.attributes[1].value} />
-              </div>}
-            </div>
-          )}
+          <ProfilePublication pub={p} index={index}/>
         </div>
       ))}
     </div>
