@@ -14,7 +14,6 @@ export const lensHub = () => {
   getSigner()
 )
 
-console.log("CONTRACT", contract)
 return contract
 
 }

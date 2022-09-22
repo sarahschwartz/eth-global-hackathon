@@ -3,10 +3,15 @@ import { createPostTypedData } from "../utils/lensQueries";
 import { signedTypeData, splitSignature } from "../utils/ethers-service";
 import { lensHub } from "../utils/lensHub";
 import { v4 as uuidv4 } from "uuid";
-import { uploadIpfs } from "../utils/ipfs-client";
+import {
+  uploadIpfsMetadata,
+  uploadFiles,
+  getLinks,
+} from "../utils/ipfs-client";
 import pollUntilIndexed from "../utils/pollUntilIndexed";
-import { db } from "../firebaseConfig";
+import { db, storage } from "../firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 export default function CreateLensPost({ profile, locks }) {
   const [content, setContent] = useState("");
@@ -15,6 +20,7 @@ export default function CreateLensPost({ profile, locks }) {
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
   const [posting, setPosting] = useState(false);
+  const [images, setImages] = useState(null);
 
   const inactiveClasses =
     "cursor-pointer px-6 py-2 border border-blue-500 rounded-full";
@@ -26,47 +32,77 @@ export default function CreateLensPost({ profile, locks }) {
     if (!profileId) {
       throw new Error("Must define PROFILE_ID in the .env to run this");
     }
-    
-    
+
     const attributes = [
-     {
-       "displayType": "string",
-       "traitType": "visibility",
-       "value": privatePost ? "private" : "public"
-     }
-   ]
-  if(privatePost){
-    const docRef = await addDoc(collection(db, "locks"), {
-      content,
-      lockAddresses,
-      ownerAddress: profile.ownedBy
-    });
-    console.log("Document written with ID: ", docRef.id);
+      {
+        displayType: "string",
+        traitType: "visibility",
+        value: privatePost ? "private" : "public",
+      },
+    ];
 
+    const media = [];
+    let mainContentFocus = "TEXT_ONLY";
 
-    attributes.push({
-      "displayType": "string",
-      "traitType": "dbRef",
-      "value": docRef.id
-    })
-  }
+    if (!privatePost && images.length > 0) {
+      mainContentFocus = "IMAGE";
+      let imagesCID = await handleImages();
+      let links = await getLinks(imagesCID);
+      links.forEach((link, i) => {
+        media.push({
+          item: "ipfs.io/ipfs/" + link.path,
+          type: images[i].type,
+          // altTag,
+          // cover
+        });
+      });
+    }
 
+    if (privatePost) {
+      let newDoc = {
+        content,
+        lockAddresses,
+        ownerAddress: profile.ownedBy,
+      };
+      if (images.length > 0) {
+        Array.from(images).forEach((img, index) => {
+          let now = Date.now();
+          let imgRef = `${img.name}-${now}`;
+          attributes.push({
+            displayType: "string",
+            traitType: `dbRefImage${index}`,
+            value: imgRef,
+          });
+          let storageRef = ref(storage, `${profile.ownedBy}/${imgRef}`);
+          uploadBytes(storageRef, img);
+        });
+      }
 
+      const docRef = await addDoc(collection(db, "locks"), newDoc);
+
+      attributes.push({
+        displayType: "string",
+        traitType: "dbRef",
+        value: docRef.id,
+      });
+    }
 
     const metadata = {
-      version: "1.0.0",
+      version: "2.0.0",
       metadata_id: uuidv4(),
       appId: "homebase420",
       description,
       content: privatePost ? "This content requires a Homebase key" : content,
       name: postName,
-      media: [],
+      media,
       attributes,
+      locale: "en",
+      mainContentFocus,
     };
 
-    console.log("METADATA", metadata)
+    console.log("METADATA", metadata);
 
-    const ipfsResult = await uploadIpfs(metadata);
+    const ipfsResult = await uploadIpfsMetadata(metadata);
     console.log("create post: ipfs result", ipfsResult);
 
     // hard coded to make the code example clear
@@ -142,45 +178,32 @@ export default function CreateLensPost({ profile, locks }) {
     const logs = indexedResult.txReceipt.logs;
 
     console.log("create post: logs", logs);
-    
-
-    // const topicId = utils.id(
-    //   "PostCreated(uint256,uint256,string,address,bytes,address,bytes,uint256)"
-    // );
-    // console.log("topicid we care about", topicId);
-
-    // const profileCreatedLog = logs.find((l) => l.topics[0] === topicId);
-    // console.log("create post: created log", profileCreatedLog);
-
-    // let profileCreatedEventLog = profileCreatedLog.topics;
-    // console.log("create post: created event logs", profileCreatedEventLog);
-
-    // const publicationId = utils.defaultAbiCoder.decode(
-    //   ["uint256"],
-    //   profileCreatedEventLog[2]
-    // )[0];
-
-    // console.log(
-    //   "create post: contract publication id",
-    //   BigNumber.from(publicationId).toHexString()
-    // );
-    // console.log(
-    //   "create post: internal publication id",
-    //   profileId + "-" + BigNumber.from(publicationId).toHexString()
-    // );
 
     setPosting(false);
-    alert('Success!')
+    alert("Success!");
+  };
 
+  const handleImages = async () => {
+    let filesArray = [];
+    for (let i = 0; i < images.length; i++) {
+      filesArray.push(images[i]);
+    }
+    let cid = await uploadFiles(filesArray);
+    return cid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setPosting(true)
-      await createPost();
-    } catch (error) {
-      console.log("ERROR", error);
+    console.log("IMAGES", images);
+    if (privatePost && lockAddresses.length < 1) {
+      alert("You need to select at least one lock for private content");
+    } else {
+      try {
+        setPosting(true);
+        await createPost();
+      } catch (error) {
+        console.log("ERROR", error);
+      }
     }
   };
 
@@ -204,7 +227,6 @@ export default function CreateLensPost({ profile, locks }) {
       <h3 className="text-2xl pb-4">Create a new post</h3>
       {!posting && (
         <form onSubmit={handleSubmit}>
-
           <div>
             <label>Content</label>
             <textarea
@@ -237,6 +259,19 @@ export default function CreateLensPost({ profile, locks }) {
               required
               onChange={(e) => {
                 setDescription(e.target.value);
+              }}
+            />
+          </div>
+
+          <div>
+            <label>Images</label>
+            <input
+              type="file"
+              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
+              accept="image/png, image/jpeg"
+              multiple
+              onChange={(e) => {
+                setImages(e.target.files);
               }}
             />
           </div>

@@ -30,7 +30,6 @@ export default function Dashboard() {
   async function fetchProfile() {
     try {
       let response = await getProfile({ handle: lensHandle });
-      console.log("RESPONSE", response);
       if (response.data.profile) {
         setProfile(response.data.profile);
         if (response.data.profile.ownedBy === address) {
@@ -40,7 +39,6 @@ export default function Dashboard() {
         }
       }
       response = await getLocksByUser(address);
-      console.log("LOCKS BY USER!!", response);
       if (response.data.locks) {
         setLocks(response.data.locks);
       }

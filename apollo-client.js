@@ -19,7 +19,6 @@ const authLink = new ApolloLink((operation, forward) => {
   // if your using node etc you have to handle your auth different
   const token = localStorage.getItem("lens_auth_token");
 
-  console.log("TOKEEN HEERE", token)
   // Use the setContext method to set the HTTP headers.
   if (token !== "undefined") {
     operation.setContext({

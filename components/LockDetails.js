@@ -19,11 +19,9 @@ export default function LockDetails({ lock }){
       let resp = await getMaxKeys(lock.address);
       if (resp) {
         setCurrentMaxKeys(resp);
-        console.log("RESSSP", resp);
       }
       resp = await getTotalSupply(lock.address);
       if (resp) {
-        console.log("RESSSP", resp);
         setTotalSupply(resp);
       }
     }
