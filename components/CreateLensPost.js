@@ -20,7 +20,7 @@ export default function CreateLensPost({ profile, locks }) {
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
   const [posting, setPosting] = useState(false);
-  const [images, setImages] = useState(null);
+  const [images, setImages] = useState([]);
 
   const inactiveClasses =
     "cursor-pointer px-6 py-2 border border-blue-500 rounded-full";
@@ -40,7 +40,7 @@ export default function CreateLensPost({ profile, locks }) {
         value: privatePost ? "private" : "public",
       },
     ];
-
+    
     const media = [];
     let mainContentFocus = "TEXT_ONLY";
 
@@ -59,6 +59,7 @@ export default function CreateLensPost({ profile, locks }) {
     }
 
     if (privatePost) {
+      console.log("PRIVATE")
       let newDoc = {
         content,
         lockAddresses,
@@ -79,13 +80,15 @@ export default function CreateLensPost({ profile, locks }) {
       }
 
       const docRef = await addDoc(collection(db, "locks"), newDoc);
-
+      console.log("DOC REF", docRef)
       attributes.push({
         displayType: "string",
         traitType: "dbRef",
         value: docRef.id,
       });
     }
+
+    console.log("ATTRIBUTES", attributes)
 
     const metadata = {
       version: "2.0.0",
