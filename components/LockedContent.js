@@ -8,9 +8,11 @@ import LockedImages from "./LockedImages";
 
 export default function LockedContent({ dbRef, imageRefs }) {
   const [content, setContent] = useState(null);
-  const [images, setImages] = useState([])
+  const [privateImages, setPrivateImages] = useState([])
   const [isKeyOwner, setIsKeyOwner] = useState(false);
   const { address } = useAccount();
+
+  console.log("IMAGESSSSSS", imageRefs)
   
   useEffect(() => {
     if (address && dbRef) {
@@ -18,14 +20,20 @@ export default function LockedContent({ dbRef, imageRefs }) {
     }
   }, [dbRef, address]);
 
-  async function getImages(ownerAddress){
-    imageRefs.forEach((imgRef) => {
-      getDownloadURL(ref(storage, `${ownerAddress}/${imgRef}`))
-    .then((url) => {
-      setImages([...images, url])
-    })
+  async function getImage(ownerAddress, imgRef){
+    let image = ref(storage, `${ownerAddress}/${imgRef}`)
+    let url = await getDownloadURL(image)
+    console.log("URL", url)
+    return url
+  }
 
-    })
+  async function getImages(ownerAddress){    
+    let imageArray = []
+    for (const imgRef of imageRefs) {
+      let url = await getImage(ownerAddress, imgRef)
+      imageArray.push(url)
+    }
+    setPrivateImages(imageArray)
   }
 
   async function getContent() {
@@ -57,7 +65,7 @@ export default function LockedContent({ dbRef, imageRefs }) {
       {isKeyOwner && content && address && (
         <div>
           <p className="text-blue-800">{content}</p>
-          {images && <LockedImages images={images} />}
+          <LockedImages images={privateImages} />
         </div>
       )}
     </div>

@@ -7,15 +7,17 @@ export default function ProfilePublication({ pub, index }) {
 
   useEffect(() => {
     async function checkAttributes() {
+      let imgRefs = []
       pub.metadata.attributes.forEach((el, index) => {
         if (el.traitType === "dbRef") {
           setContentRef(el.value);
         } else if (el.traitType.startsWith("dbRefImage")) {
           if (!imageRefs.includes(el.value)) {
-            setImageRefs([...imageRefs, el.value]);
+            imgRefs.push(el.value);
           }
         }
       });
+      setImageRefs(imgRefs)
     }
     checkAttributes();
   }, [pub]);
