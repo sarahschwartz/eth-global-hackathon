@@ -30,7 +30,7 @@ export default function LockDetails({ lock }){
         <div>
             <h3 className="text-xl font-bold">{lock.name}</h3>
           <p>Price: {ethers.utils.formatEther(lock.price)} MATIC</p>
-          {currentMaxKeys && <p>Current Max Keys: {currentMaxKeys}</p>}
+          {currentMaxKeys && <p>Max Keys: {currentMaxKeys}</p>}
 
           <p>Total Supply: {totalSupply ? totalSupply : 0}</p>
 

@@ -27,9 +27,7 @@ export default function LockPage() {
 
   async function fetchLock() {
     try {
-      console.log("LOCK ADDRESS", lockAddress);
       let response = await getLockFromAddress(lockAddress);
-      console.log("LOCK", response);
       setLock(response.data.lock);
     } catch (error) {
       console.log("ERROR:", error);
@@ -39,14 +37,9 @@ export default function LockPage() {
 
 
   async function handleCheckIfKeyOwner() {
-    console.log("LOCK ADDRESS", lockAddress);
-    console.log("ADDRESS", address);
     let resp = await checkIfKeyOwner(lockAddress, address);
-    console.log("KEY OWNER RESP", resp);
     if (resp.data.keys.length > 0) {
       if (resp.data.keys[0].lock.id === lockAddress) {
-        console.log("THIIIS", resp.data.keys[0].lock.id)
-        console.log("EQUALS THIIIS", lockAddress)
         setOwnsKey(true);
       }
     }
@@ -60,11 +53,15 @@ export default function LockPage() {
       {lock && (
         <div className="grid place-items-center mt-32">
           <LockDetails lock={lock}/>
-          {ownsKey ? (
-              "You already own this key"
-              ) : (
-            <PurchaseKey lock={lock} />
-          )}
+          {address && 
+          <div>
+            {ownsKey ? (
+                "You already own this key"
+                ) : (
+              <PurchaseKey lock={lock} />
+            )}
+          </div>
+          }
         </div>
       )}
     </div>

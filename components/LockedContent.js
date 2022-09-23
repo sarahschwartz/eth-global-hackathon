@@ -12,7 +12,6 @@ export default function LockedContent({ dbRef, imageRefs }) {
   const [isKeyOwner, setIsKeyOwner] = useState(false);
   const { address } = useAccount();
 
-  console.log("IMAGESSSSSS", imageRefs)
   
   useEffect(() => {
     if (address && dbRef) {
@@ -23,7 +22,6 @@ export default function LockedContent({ dbRef, imageRefs }) {
   async function getImage(ownerAddress, imgRef){
     let image = ref(storage, `${ownerAddress}/${imgRef}`)
     let url = await getDownloadURL(image)
-    console.log("URL", url)
     return url
   }
 
