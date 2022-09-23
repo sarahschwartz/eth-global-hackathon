@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { getLockFromAddress, checkIfKeyOwner } from "../../utils/unlockQueries";
 import PurchaseKey from "../../components/PurchaseKey";
 import LockDetails from "../../components/LockDetails";
+import Layout from "../../components/layout/Layout";
 
 export default function LockPage() {
   const [lock, setLock] = useState();
@@ -45,10 +46,9 @@ export default function LockPage() {
     }
   }
 
-  // TO DO: get lens profile that made lock
   
   return (
-    <div>
+    <Layout>
       <ConnectButton />
       {lock && (
         <div className="grid place-items-center mt-32">
@@ -64,6 +64,6 @@ export default function LockPage() {
           }
         </div>
       )}
-    </div>
+    </Layout>
   );
 }

@@ -1,12 +1,49 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
-import { getProfile } from "../../utils/lensQueries";
+import { getProfile, getProfiles } from "../../utils/lensQueries";
 import { useAccount } from "wagmi";
 import DashboardLocks from "../../components/DashboardLocks";
 import CreateLock from "../../components/CreateLock";
 import { getLocksByUser } from "../../utils/unlockQueries";
 import Layout from "../../components/layout/Layout";
 import CreateLensPost from "../../components/CreateLensPost";
+import Link from "next/link";
+import CreateLensProfile from "../../components/CreateLensProfile";
+
+function WrongDashboard({address}){
+  const [alreadyHasHandle, setAlreadyHasHandle] = useState()
+  const [handle, setHandle] = useState()
+  useEffect(() => {
+    async function checkAddress(){
+      console.log("ADDRESS", address)
+      let resp = await getProfiles({ownedBy: address})
+      console.log("DEFAULT RESP", resp)
+      if(resp.data.profiles.items.length > 0){
+        setAlreadyHasHandle(true)
+        setHandle(resp.data.profiles.items[0].handle)
+      } else {
+        setAlreadyHasHandle(false)
+      }
+    }
+    checkAddress()
+  },[address])
+  if(alreadyHasHandle && handle){
+    return(
+      <div className="border border-blue-800 rounded-lg w-48 text-center py-2">
+      <Link href={`/dashboard/${handle}`}>Go to your dashboard
+      </Link>
+      </div>
+    )
+  }
+  if(alreadyHasHandle === false){
+    return (
+      <div>
+        <p>You need to create a new handle first</p>
+        <CreateLensProfile address={address}/>
+        </div>
+    )
+  }
+}
 
 export default function Dashboard() {
   const [profile, setProfile] = useState();
@@ -46,6 +83,7 @@ export default function Dashboard() {
       console.log("ERROR:", error);
     }
   }
+
   return (
     <Layout>
       {mounted && (
@@ -78,7 +116,9 @@ export default function Dashboard() {
           )}
 
           {!isUser && address && (
-            <div>{"Uh oh! This isn't your dashboard"}</div>
+            <div>{"Uh oh! This isn't your dashboard"}
+              <WrongDashboard address={address}/>
+            </div>
           )}
           {!address && (
             <div className="text-center pt-8">

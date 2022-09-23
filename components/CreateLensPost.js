@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createPostTypedData } from "../utils/lensQueries";
 import { signedTypeData, splitSignature } from "../utils/ethers-service";
-import { lensHub } from "../utils/lensHub";
+import { lensHub, loginWithLens } from "../utils/lensHub";
 import { v4 as uuidv4 } from "uuid";
 import {
   uploadIpfsMetadata,
@@ -194,12 +194,13 @@ export default function CreateLensPost({ profile, locks }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("IMAGES", images);
+    
     if (privatePost && lockAddresses.length < 1) {
       alert("You need to select at least one lock for private content");
     } else {
       try {
         setPosting(true);
+        await loginWithLens();
         await createPost();
       } catch (error) {
         console.log("ERROR", error);

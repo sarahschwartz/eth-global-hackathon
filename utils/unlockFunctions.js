@@ -8,10 +8,8 @@ const abi = abis.PublicLock.v10.abi
 
 export const grantKeys = async (lockAddress, wallets, timestamp) => {
   const timestamps = wallets.map(() => timestamp);
-  // An array of expiration Timestamps for the keys being granted
-  console.log("TIMSTAMPS", timestamps);
-  // An array of receiving addresses
-  console.log("WALLETS", wallets);
+  // Timestamps: An array of expiration Timestamps for the keys being granted
+  // Wallets: An array of receiving addresses
 
   try {
     const { contract, signer } = connectContract(lockAddress, abi);
@@ -73,7 +71,7 @@ export const updateKeyPrice = async (lockAddress, newPrice, tokenAddress) => {
     tokenAddress = 0;
   }
   try {
-    const { contract, signer } = connectContract(lockAddress, abi);
+    const { contract } = connectContract(lockAddress, abi);
     const txn = await contract.updateKeyPricing(newPrice, tokenAddress)
     console.log("Minting...", txn.hash);
     let wait = await txn.wait();

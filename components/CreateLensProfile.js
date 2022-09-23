@@ -1,70 +1,36 @@
 import { useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
-import { ethers } from "ethers";
 import {
   createProfile,
-  generateChallenge,
-  authenticate,
 } from "../utils/lensQueries";
+import { loginWithLens } from "../utils/lensHub";
+import { useRouter } from "next/router";
 
-export default function CreateLensProfile() {
+export default function CreateLensProfile(address) {
   const [lensHandle, setLensHandle] = useState("");
-  const { address } = useAccount();
+  const router = useRouter
 
-  const login = async () => {
-    const { ethereum } = window;
-
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      console.log("PROVIDER", provider);
-      const signer = provider.getSigner();
-      console.log("SIGNER", signer);
-      const signerAddress = await signer.getAddress();
-      console.log("SIGNER ADDRESS", signerAddress);
-      // we request a challenge from the server
-      const challengeResponse = await generateChallenge(address);
-      console.log("CHALLENGE", challengeResponse);
-      console.log("TEXT", challengeResponse.data.challenge.text);
-      const signature = await signer.signMessage(
-        challengeResponse.data.challenge.text
-      );
-      console.log("SIGNATURE", signature);
-      const accessTokens = await authenticate(signerAddress, signature);
-      console.log(accessTokens);
-      localStorage.setItem(
-        "lens_auth_token",
-        accessTokens.data.authenticate.accessToken
-      );
-    }
-
-    // you now have the accessToken and the refreshToken
-    // {
-    //  data: {
-    //   authenticate: {
-    //    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjB4YjE5QzI4OTBjZjk0N0FEM2YwYjdkN0U1QTlmZkJjZTM2ZDNmOWJkMiIsInJvbGUiOiJub3JtYWwiLCJpYXQiOjE2NDUxMDQyMzEsImV4cCI6MTY0NTEwNjAzMX0.lwLlo3UBxjNGn5D_W25oh2rg2I_ZS3KVuU9n7dctGIU",
-    //    refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjB4YjE5QzI4OTBjZjk0N0FEM2YwYjdkN0U1QTlmZkJjZTM2ZDNmOWJkMiIsInJvbGUiOiJyZWZyZXNoIiwiaWF0IjoxNjQ1MTA0MjMxLCJleHAiOjE2NDUxOTA2MzF9.2Tdts-dLVWgTLXmah8cfzNx7sGLFtMBY7Z9VXcn2ZpE"
-    //   }
-    // }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("HANDLE", lensHandle)
-    // await login();
 
-    const request = {
-      handle: lensHandle,
-    };
-    const response = await createProfile(request);
-    console.log("CREATED PROFILE?", response);
+    try{
+      console.log("LOGGING IN")
+      await loginWithLens();
+      console.log("LOGGED IN!")
+      const request = {
+        handle: lensHandle,
+      };
+      const response = await createProfile(request);
+      console.log("CREATED PROFILE!", response);
+      router.push(`/dashboard/${lensHandle}`);
+    } catch (error){
+      console.log("ERROR", error)
+    }
   };
 
   return (
     <div>
       <h2>Create a new lens profile</h2>
-      <ConnectButton />
-      <button onClick={login}>Login</button>
       {address && (
         <form onSubmit={handleSubmit}>
           <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
