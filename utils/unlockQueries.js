@@ -63,7 +63,6 @@ const IS_KEY_OWNER = `
         lock {
           id
         }
-        keyId
         owner {
           id
         }

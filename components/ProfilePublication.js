@@ -5,12 +5,6 @@ import Image from "next/image";
 export default function ProfilePublication({ pub, index }) {
   const [contentRef, setContentRef] = useState();
   const [imageRefs, setImageRefs] = useState([]);
-  if(pub.metadata.media.length > 0){
-    // console.log("MEDIA", pub.metadata.media)
-    pub.metadata.media.forEach((media) => {
-      console.log("MEDIA!", media.original.url)
-    })
-  }
 
   useEffect(() => {
     let imgRefs = [];
@@ -28,7 +22,6 @@ export default function ProfilePublication({ pub, index }) {
     }
   }, [pub]);
 
-  // pub.metadata.attributes.length > 0 && p.metadata.attributes[0].traitType === "visibility" && p.metadata.attributes[0].value === "private" &&
   return (
     <div>
       {pub.__typename === "Post" && (
@@ -37,7 +30,6 @@ export default function ProfilePublication({ pub, index }) {
           <p>{pub.metadata.content}</p>
           {pub.metadata.media.length > 0 && 
           <div>
-              hi
             {pub.metadata.media.map((media, index) => (
             <div key={index}>
               <Image src={"https://"+media.original.url} height="100px" width="100px" alt={media.original.altTag ? media.original.altTag : "lens-image"}/>

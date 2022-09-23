@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createPostTypedData } from "../utils/lensQueries";
 import { signedTypeData, splitSignature } from "../utils/ethers-service";
-import { lensHub } from "../utils/lensHub";
+import { lensHub, loginWithLens } from "../utils/lensHub";
 import { v4 as uuidv4 } from "uuid";
 import {
   uploadIpfsMetadata,
@@ -20,7 +20,7 @@ export default function CreateLensPost({ profile, locks }) {
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
   const [posting, setPosting] = useState(false);
-  const [images, setImages] = useState(null);
+  const [images, setImages] = useState([]);
 
   const inactiveClasses =
     "cursor-pointer px-6 py-2 border border-blue-500 rounded-full";
@@ -40,7 +40,7 @@ export default function CreateLensPost({ profile, locks }) {
         value: privatePost ? "private" : "public",
       },
     ];
-
+    
     const media = [];
     let mainContentFocus = "TEXT_ONLY";
 
@@ -59,6 +59,7 @@ export default function CreateLensPost({ profile, locks }) {
     }
 
     if (privatePost) {
+      console.log("PRIVATE")
       let newDoc = {
         content,
         lockAddresses,
@@ -79,13 +80,15 @@ export default function CreateLensPost({ profile, locks }) {
       }
 
       const docRef = await addDoc(collection(db, "locks"), newDoc);
-
+      console.log("DOC REF", docRef)
       attributes.push({
         displayType: "string",
         traitType: "dbRef",
         value: docRef.id,
       });
     }
+
+    console.log("ATTRIBUTES", attributes)
 
     const metadata = {
       version: "2.0.0",
@@ -194,12 +197,13 @@ export default function CreateLensPost({ profile, locks }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("IMAGES", images);
+    
     if (privatePost && lockAddresses.length < 1) {
       alert("You need to select at least one lock for private content");
     } else {
       try {
         setPosting(true);
+        await loginWithLens();
         await createPost();
       } catch (error) {
         console.log("ERROR", error);

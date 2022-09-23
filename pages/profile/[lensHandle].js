@@ -6,6 +6,7 @@ import ProfilePublications from "../../components/ProfilePublications";
 import { getProfile, getPublications } from "../../utils/lensQueries";
 import ProfileLocks from "../../components/ProfileLocks";
 import { getLocksByUser } from "../../utils/unlockQueries";
+import Layout from "../../components/layout/Layout";
 
 export default function Profile() {
   const [profile, setProfile] = useState();
@@ -41,16 +42,19 @@ export default function Profile() {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline my-4">Profile Page</h1>
-      <ConnectButton />
+    <Layout>
+      <div className="mx-8">
+        <h1 className="text-3xl font-bold underline my-4">Profile Page</h1>
+        <ConnectButton />
 
-      {profile && <ProfileDetails profile={profile} />}
+        {profile && <ProfileDetails profile={profile} />}
 
-      {locks.length > 0 && <ProfileLocks locks={locks} />}
-      
-      {pubs.length > 0 && <ProfilePublications pubs={pubs} />}
+        {locks.length > 0 && <ProfileLocks locks={locks} />}
+        
+        {pubs.length > 0 && <ProfilePublications pubs={pubs} />}
 
-    </div>
+      </div>
+
+    </Layout>
   );
 }
