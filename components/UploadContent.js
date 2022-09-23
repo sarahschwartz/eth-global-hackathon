@@ -12,9 +12,7 @@ export default function UploadContent({ lockAddress }) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      await updateDoc(docRef, {
-        CIDs: arrayUnion(CID),
-      });
+      alert("Oops! Try again")
     } else {
       await setDoc(docRef, {
         CIDs:[CID],

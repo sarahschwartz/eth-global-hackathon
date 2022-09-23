@@ -723,3 +723,135 @@ export const getFollowers = async (profileId) => {
 
   return response;
 };
+
+
+const CREATE_POST_TYPED_DATA = `
+  mutation($request: CreatePublicPostRequest!) { 
+    createPostTypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        types {
+          PostWithSig {
+            name
+            type
+          }
+        }
+      domain {
+        name
+        chainId
+        version
+        verifyingContract
+      }
+      value {
+        nonce
+        deadline
+        profileId
+        contentURI
+        collectModule
+        collectModuleInitData
+        referenceModule
+        referenceModuleInitData
+      }
+    }
+  }
+}
+`;
+
+
+export const createPostTypedData = (createPostTypedDataRequest) => {
+  return apolloClient.mutate({
+    mutation: gql(CREATE_POST_TYPED_DATA),
+    variables: {
+      request: createPostTypedDataRequest,
+    },
+  });
+};
+
+const HAS_TX_BEEN_INDEXED = `
+  query($request: HasTxHashBeenIndexedRequest!) {
+    hasTxHashBeenIndexed(request: $request) { 
+	    ... on TransactionIndexedResult {
+            indexed
+            txReceipt {
+                to
+                from
+                contractAddress
+                transactionIndex
+                root
+                gasUsed
+                logsBloom
+                blockHash
+                transactionHash
+                blockNumber
+                confirmations
+                cumulativeGasUsed
+                effectiveGasPrice
+                byzantium
+                type
+                status
+                logs {
+                    blockNumber
+                    blockHash
+                    transactionIndex
+                    removed
+                    address
+                    data
+                    topics
+                    transactionHash
+                    logIndex
+                }
+            }
+            metadataStatus {
+              status
+              reason
+            }
+        }
+        ... on TransactionError {
+            reason
+            txReceipt {
+                to
+                from
+                contractAddress
+                transactionIndex
+                root
+                gasUsed
+                logsBloom
+                blockHash
+                transactionHash
+                blockNumber
+                confirmations
+                cumulativeGasUsed
+                effectiveGasPrice
+                byzantium
+                type
+                status
+                logs {
+                    blockNumber
+                    blockHash
+                    transactionIndex
+                    removed
+                    address
+                    data
+                    topics
+                    transactionHash
+                    logIndex
+             }
+            }
+        },
+        __typename
+    }
+  }
+`;
+
+export const hasTxBeenIndexed = (txHash) => {
+  return apolloClient.query({
+    query: gql(HAS_TX_BEEN_INDEXED),
+    variables: {
+      request: {
+        txHash,
+      },
+    },
+    fetchPolicy: 'network-only',
+  });
+};

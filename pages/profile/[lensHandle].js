@@ -47,9 +47,10 @@ export default function Profile() {
 
       {profile && <ProfileDetails profile={profile} />}
 
+      {locks.length > 0 && <ProfileLocks locks={locks} />}
+      
       {pubs.length > 0 && <ProfilePublications pubs={pubs} />}
 
-      {locks.length > 0 && <ProfileLocks locks={locks} />}
     </div>
   );
 }

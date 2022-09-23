@@ -10,7 +10,7 @@ export default function PurchaseKey({lock}){
         className="my-4 border-2 hover:bg-green-500 hover:text-white border-green-500 px-4 py-2"
         onClick={handlePurchase}
         >
-            Purchase Lock
+            Purchase Key
         </button>
     )
 }

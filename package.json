@@ -17,10 +17,16 @@
     "ethers": "^5.7.0",
     "firebase": "^9.9.4",
     "graphql": "^16.6.0",
+    "ipfs-http-client": "^58.0.0",
+    "multiparty": "^4.2.3",
     "next": "12.3.0",
+    "next-connect": "^0.13.0",
+    "omit-deep": "^0.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "^0.6.5"
+    "uuid": "^9.0.0",
+    "wagmi": "^0.6.5",
+    "web3.storage": "^4.4.0"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
