@@ -43,7 +43,7 @@ export default function LockedContent({ dbRef, imageRefs }) {
 
       for (let i = 0; i < data.lockAddresses.length; i++) {
         let resp = await checkIfKeyOwner(data.lockAddresses[i], address);
-        if (resp.data.keys.length > 0) {
+        if (resp.data.keys.length > 0 || data.ownerAddress === address) {
           let lockData = await getLockFromAddress(data.lockAddresses[i]);
           if (data.ownerAddress.toLowerCase() === lockData.data.lock.owner) {
             setContent(data.content);
