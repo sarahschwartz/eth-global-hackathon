@@ -21,7 +21,7 @@ const authLink = new ApolloLink((operation, forward) => {
   console.log("token", token);
 
   // Use the setContext method to set the HTTP headers.
-  if (token !== "undefined") {
+  if (token != null) {
     operation.setContext({
       headers: {
         "x-access-token": `Bearer ${token}`,

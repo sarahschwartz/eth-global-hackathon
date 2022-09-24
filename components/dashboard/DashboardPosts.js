@@ -4,9 +4,9 @@ export default function DashboardPosts({ profile, pubs }) {
   return (
     <div className="mx-auto w-full mt-5 md:mt-8 pt-5 md:pt-8 border-t border-stone-300">
       <div className="flex flex-wrap justify-between items-center">
-        <h5 className="text-lg text-stone-900 sm:text-xl font-cursive font-normal">
+        <h2 className="text-lg text-stone-900 sm:text-xl font-cursive font-normal">
           My recent posts
-        </h5>
+        </h2>
         <Link href={`/homebase/${profile.handle}`}>
           <a className="inline-flex items-center rounded-md border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-700 shadow-sm hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
             View all

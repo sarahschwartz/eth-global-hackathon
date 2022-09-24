@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function RedirectDashboard({ handle }) {
   return (
-    <>
+    <div className="mx-auto max-w-md sm:max-w-3xl my-8 sm:my-12">
       <h1 className="text-center text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
         Not quite at home yet
       </h1>
@@ -17,6 +17,6 @@ export default function RedirectDashboard({ handle }) {
           </a>
         </Link>
       </div>
-    </>
+    </div>
   );
 }

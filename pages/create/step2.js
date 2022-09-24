@@ -83,8 +83,7 @@ export default function Step2() {
                       Choose your Lens profile
                     </h1>
                     <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-600">
-                      Every homebase is tied to a Lens profile. Pick one of your
-                      Lens profiles to access your homebase.
+                      Pick one of your Lens profiles to access your homebase.
                     </p>
                     <div className="mx-auto w-full sm:max-w-md mt-5 md:mt-8">
                       <RadioGroup value={selected} onChange={setSelected}>
@@ -223,7 +222,7 @@ export default function Step2() {
                 )}
               </div>
             ) : (
-              <NeedConnectWallet />
+              <NeedConnectWallet message="Connect your wallet to access your homebase." />
             )}
           </>
         )}

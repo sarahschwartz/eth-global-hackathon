@@ -106,36 +106,34 @@ export default function Dashboard() {
   return (
     <Layout>
       {mounted && (
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 mb-8">
-          <div className="mx-auto max-w-md sm:max-w-3xl">
-            {loading ? (
-              <Loading />
-            ) : (
-              <>
-                {address ? (
-                  <>
-                    {isUser ? (
-                      <>
-                        <h1 className="text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
-                          gm, {profile.handle}
-                        </h1>
-                        <p className="text-xl text-stone-600 mx-auto mt-4 mb-5">
-                          Make yourself at home.
-                        </p>
-                        <CreateLensPost profile={profile} locks={locks} />
-                        <DashboardPosts profile={profile} pubs={pubs} />
-                        <DashboardLocks locks={locks} />
-                      </>
-                    ) : (
-                      <WrongDashboard address={address} />
-                    )}
-                  </>
-                ) : (
-                  <NeedConnectWallet />
-                )}
-              </>
-            )}
-          </div>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              {address ? (
+                <div className="mx-auto max-w-md sm:max-w-3xl mb-8 sm:mb-12">
+                  {isUser ? (
+                    <>
+                      <h1 className="text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
+                        gm, {profile.handle}
+                      </h1>
+                      <p className="text-xl text-stone-600 mx-auto mt-4 mb-5">
+                        Make yourself at home.
+                      </p>
+                      <CreateLensPost profile={profile} locks={locks} />
+                      <DashboardPosts profile={profile} pubs={pubs} />
+                      <DashboardLocks locks={locks} />
+                    </>
+                  ) : (
+                    <WrongDashboard address={address} />
+                  )}
+                </div>
+              ) : (
+                <NeedConnectWallet message="Connect your wallet to access your homebase." />
+              )}
+            </>
+          )}
         </div>
       )}
     </Layout>

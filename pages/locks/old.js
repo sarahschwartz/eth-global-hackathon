@@ -35,10 +35,10 @@ export default function LockPage() {
     }
   }
 
-
-
   async function handleCheckIfKeyOwner() {
     let resp = await checkIfKeyOwner(lockAddress, address);
+    console.log("my address", address);
+    console.log("checkIfKeyOwner", resp);
     if (resp.data.keys.length > 0) {
       if (resp.data.keys[0].lock.id === lockAddress) {
         setOwnsKey(true);
@@ -46,22 +46,21 @@ export default function LockPage() {
     }
   }
 
-  
   return (
     <Layout>
       <ConnectButton />
       {lock && (
         <div className="grid place-items-center mt-32">
-          <LockDetails lock={lock}/>
-          {address && 
-          <div>
-            {ownsKey ? (
+          <LockDetails lock={lock} />
+          {address && (
+            <div>
+              {ownsKey ? (
                 "You already own this key"
-                ) : (
-              <PurchaseKey lock={lock} />
-            )}
-          </div>
-          }
+              ) : (
+                <PurchaseKey lock={lock} />
+              )}
+            </div>
+          )}
         </div>
       )}
     </Layout>
