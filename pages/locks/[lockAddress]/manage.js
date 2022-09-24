@@ -72,14 +72,14 @@ export default function ManageLockPage() {
           <>
             {ownsLock ? (
               <div className="mx-auto max-w-md sm:max-w-3xl mb-8 sm:mb-12">
-                <h1 className="text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
+                <h1 className="text-center text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
                   Manage my lock
                 </h1>
-                <p className="text-xl text-stone-600 mx-auto mt-4 mb-5">
+                <p className="text-center text-xl text-stone-600 mx-auto my-4">
                   Manage memberships for your homebase.
                 </p>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 pt-5 md:pt-8">
                   <div className="flex-shrink-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

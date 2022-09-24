@@ -27,7 +27,7 @@ export default function UpdateLock({ lockAddress, currentMaxKeys }) {
             htmlFor="max-keys"
             className="block text-sm font-medium text-stone-700"
           >
-            Max keys
+            Max number of keys
           </label>
           <input
             id="max-keys"

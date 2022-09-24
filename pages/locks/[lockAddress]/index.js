@@ -2,10 +2,13 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { getLockFromAddress, checkIfKeyOwner } from "../../utils/unlockQueries";
-import PurchaseKey from "../../components/PurchaseKey";
-import LockDetails from "../../components/LockDetails";
-import Layout from "../../components/layout/Layout";
+import {
+  getLockFromAddress,
+  checkIfKeyOwner,
+} from "../../../utils/unlockQueries";
+import PurchaseKey from "../../../components/PurchaseKey";
+import LockDetails from "../../../components/LockDetails";
+import Layout from "../../../components/layout/Layout";
 
 export default function ViewLockPage() {
   const [lock, setLock] = useState();

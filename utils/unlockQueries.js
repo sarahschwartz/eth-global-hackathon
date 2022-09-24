@@ -22,7 +22,7 @@ export const getLocksByUser = async (address) => {
     variables: {
       owner: address ? address : "",
     },
-    context: { clientName: "unlock-subgraph" }
+    context: { clientName: "unlock-subgraph" },
   });
 };
 
@@ -52,7 +52,7 @@ export const getLockFromAddress = async (lockAddress) => {
     variables: {
       id: lockAddress ? lockAddress : "",
     },
-    context: { clientName: "unlock-subgraph" }
+    context: { clientName: "unlock-subgraph" },
   });
 };
 
@@ -77,8 +77,26 @@ export const checkIfKeyOwner = async (lockAddress, walletAddress) => {
       lockAddress: lockAddress,
       keyOwner: walletAddress.toLowerCase(),
     },
-    context: { clientName: "unlock-subgraph" }
+    context: { clientName: "unlock-subgraph" },
   });
 };
 
+const RECENT_LOCK_BY_USER = `
+    query($owner: Bytes!) {
+      locks(where: {owner: $owner}, orderBy: creationBlock, orderDirection: desc, first: 1) {
+        id
+        address
+        name
+      }
+    }
+`;
 
+export const getRecentLockByUser = async (address) => {
+  return apolloClient.query({
+    query: gql(RECENT_LOCK_BY_USER),
+    variables: {
+      owner: address ? address : "",
+    },
+    context: { clientName: "unlock-subgraph" },
+  });
+};
