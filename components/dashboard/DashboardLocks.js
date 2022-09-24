@@ -1,3 +1,4 @@
+import Link from "next/link";
 import LockDetails from "../LockDetails";
 import GrantKeysForm from "../GrantKeysForm";
 import UpdateLock from "../UpdateLock";
@@ -9,16 +10,18 @@ export default function DashboardLocks({ locks }) {
         <h5 className="text-lg text-stone-900 sm:text-xl font-cursive font-normal">
           My home locks
         </h5>
-        <a className="inline-flex items-center rounded-md border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-          Create lock
-        </a>
+        <Link href="/locks/create">
+          <a className="inline-flex items-center rounded-md border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-700 shadow-sm hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+            Create lock
+          </a>
+        </Link>
       </div>
-      <p className="text-stone-600 mt-2 mb-4">
+      <p className="text-stone-600 mt-2 mb-5">
         Memberships that I&apos;ve set up to grant access to my homebase.
       </p>
       {locks.length > 0 ? (
         <>
-          {locks.map((lock) => (
+          {/* {locks.map((lock) => (
             <div
               key={lock.id}
               className="p-4 my-8 mx-auto rounded-lg shadow-lg max-w-2xl "
@@ -27,7 +30,14 @@ export default function DashboardLocks({ locks }) {
               <GrantKeysForm lockAddress={lock.address} />
               <UpdateLock lockAddress={lock.address} />
             </div>
-          ))}
+          ))} */}
+          <ul role="list" className="-my-5 divide-y divide-stone-300">
+            {locks.map((lock) => (
+              <li key={lock.id} className="py-4">
+                <LockDetails lock={lock} />
+              </li>
+            ))}
+          </ul>
         </>
       ) : (
         <div className="text-center rounded-lg border-2 border-dashed border-stone-300 p-12">
