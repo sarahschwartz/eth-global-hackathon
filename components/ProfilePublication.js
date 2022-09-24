@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import LockedContent from "./LockedContent";
-import Image from "next/image";
+import PostImage from "./PostImage";
+// import Image from "next/image";
+import Link from "next/link";
 
 export default function ProfilePublication({ pub, index }) {
   const [contentRef, setContentRef] = useState();
@@ -26,13 +28,36 @@ export default function ProfilePublication({ pub, index }) {
     <div>
       {pub.__typename === "Post" && (
         <div>
+          <div>
+            {pub.profile.picture && 
+            <img
+              className="h-10 w-10 rounded-full"
+              src={pub.profile.picture}
+              alt="pfp"
+            />
+            }
+          </div>
+          <p className="text-sm font-medium text-gray-900">
+            <Link
+              href={`/profile/${pub.profile.handle}`}
+              className="hover:underline"
+            >
+              {pub.profile.handle}
+            </Link>
+          </p>
+          <p className="text-sm text-gray-500">
+            <time dateTime={pub.createdAt}>
+              {pub.createdAt}
+            </time>
+          </p>
+
           <p className="font-bold">{pub.metadata.name}</p>
           <p>{pub.metadata.content}</p>
           {pub.metadata.media.length > 0 && 
           <div>
             {pub.metadata.media.map((media, index) => (
             <div key={index}>
-              <Image src={"https://"+media.original.url} height="100px" width="100px" alt={media.original.altTag ? media.original.altTag : "lens-image"}/>
+              <PostImage url={media.original.url} altTag={media.original.altTag}/>
             </div>
           ))}
           </div>

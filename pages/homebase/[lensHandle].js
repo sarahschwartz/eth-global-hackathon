@@ -7,6 +7,7 @@ import { getProfile, getPublications } from "../../utils/lensQueries";
 import ProfileLocks from "../../components/ProfileLocks";
 import { getLocksByUser } from "../../utils/unlockQueries";
 import Layout from "../../components/layout/Layout";
+import FollowUser from "../../components/FollowUser";
 
 export default function Profile() {
   const [profile, setProfile] = useState();
@@ -47,7 +48,15 @@ export default function Profile() {
         <h1 className="text-3xl font-bold underline my-4">Profile Page</h1>
         <ConnectButton />
 
-        {profile && <ProfileDetails profile={profile} />}
+        {profile && <div className="pb-8">
+          <ProfileDetails profile={profile} />
+          {!profile.isFollowedByMe ? 
+          <FollowUser profileIdToFollow={profile.id}/>
+          :
+          <p className="italic text-gray-500">following</p>
+          }
+          </div>
+          }
 
         {locks.length > 0 && <ProfileLocks locks={locks} />}
         
