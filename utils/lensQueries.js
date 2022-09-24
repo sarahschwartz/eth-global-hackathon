@@ -135,6 +135,7 @@ const GET_PROFILE = `
           __typename
         }
         handle
+        isFollowedByMe
         coverPicture {
           ... on NftImage {
             contractAddress

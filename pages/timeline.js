@@ -8,9 +8,11 @@ import ProfilePublication from "../components/ProfilePublication"
 export default function Timeline() {
   const [timelinePubs, setTimelinePubs] = useState([])
   const [showLogin, setShowLogin] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const { address } = useAccount();
 
   useEffect(() => {
+    setMounted(true)
     if (address) {
       goGetTimeline();
     }
@@ -19,6 +21,7 @@ export default function Timeline() {
   const handleLogin = async () => {
     await loginWithLens();
     await goGetTimeline()
+    setShowLogin(false)
   }
 
   const goGetTimeline = async () => {
@@ -54,7 +57,7 @@ export default function Timeline() {
               </div>
           ))}
           </div>}
-        {/* {!address && <div>Connect your wallet to see your timeline</div>} */}
+        {mounted && !address && <div>Connect your wallet to see your timeline</div>}
       </div>
 
     </Layout>
