@@ -11,13 +11,11 @@ import { getLocksByUser } from "../../utils/unlockQueries";
 import DashboardLocks from "../../components/dashboard/DashboardLocks";
 import DashboardPosts from "../../components/dashboard/DashboardPosts";
 import CreateLock from "../../components/CreateLock";
-
 import Layout from "../../components/layout/Layout";
 import CreateLensPost from "../../components/CreateLensPost";
 import Loading from "../../components/placeholders/Loading";
 import RedirectDashboard from "../../components/placeholders/RedirectDashboard";
 import NeedProfile from "../../components/placeholders/NeedProfile";
-
 import NeedConnectWallet from "../../components/placeholders/NeedConnectWallet";
 
 function WrongDashboard({ address }) {
@@ -108,7 +106,7 @@ export default function Dashboard() {
   return (
     <Layout>
       {mounted && (
-        <div className="mx-auto my-4 max-w-7xl px-4 sm:my-8 sm:px-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mx-auto max-w-md sm:max-w-3xl">
             {loading ? (
               <Loading />
@@ -121,11 +119,11 @@ export default function Dashboard() {
                         <h1 className="text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
                           gm, {profile.handle}
                         </h1>
-                        <p className="mx-auto mt-4 max-w-3xl text-xl text-stone-600">
+                        <p className="text-xl text-stone-600 mx-auto mt-4 mb-5 md:mb-8 ">
                           Make yourself at home.
                         </p>
-                        <CreateLensPost />
-                        <DashboardPosts pubs={pubs} />
+                        <CreateLensPost profile={profile} locks={locks} />
+                        <DashboardPosts profile={profile} pubs={pubs} />
                         <DashboardLocks locks={locks} />
                       </>
                     ) : (

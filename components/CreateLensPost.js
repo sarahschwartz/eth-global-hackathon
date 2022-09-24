@@ -12,26 +12,28 @@ import pollUntilIndexed from "../utils/pollUntilIndexed";
 import { db, storage } from "../firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
+import Loading from "./placeholders/Loading";
 
 export default function CreateLensPost({ profile, locks }) {
   const [content, setContent] = useState("");
-  const [postName, setPostName] = useState("");
-  const [description, setDescription] = useState("");
   const [privatePost, setPrivatePost] = useState(false);
   const [lockAddresses, setLockAddresses] = useState([]);
   const [posting, setPosting] = useState(false);
   const [images, setImages] = useState([]);
 
   const inactiveClasses =
-    "cursor-pointer px-6 py-2 border border-blue-500 rounded-full";
+    "cursor-pointer inline-flex items-center rounded-full border border-emerald-700 px-2.5 py-1.5 text-xs font-medium text-emerald-700 shadow-sm hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 mr-1";
   const activeClasses =
-    "cursor-pointer px-6 py-2 border bg-blue-500 text-white rounded-full";
+    "cursor-pointer inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-emerald-700 hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 mr-1";
 
   const createPost = async () => {
     const profileId = profile.id;
     if (!profileId) {
-      throw new Error("Must define PROFILE_ID in the .env to run this");
+      throw new Error("Must have profile");
     }
+
+    const postName = `Post by ${profile.handle}`;
+    const description = `Swing by ${profile.handle} Homebase to check out more content`;
 
     const attributes = [
       {
@@ -207,6 +209,7 @@ export default function CreateLensPost({ profile, locks }) {
         await createPost();
       } catch (error) {
         console.log("ERROR", error);
+        setPosting(false);
       }
     }
   };
@@ -227,110 +230,178 @@ export default function CreateLensPost({ profile, locks }) {
   };
 
   return (
-    <div className="py-8">
-      <h3 className="text-2xl pb-4">Create a new post</h3>
+    <div>
       {!posting && (
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className="overflow-hidden rounded-lg border border-stone-300"
+        >
           <div>
-            <label>Content</label>
+            <label htmlFor="content" className="sr-only">
+              Content
+            </label>
             <textarea
-              type="text"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
               required
+              type="text"
+              id="content"
+              name="content"
+              rows={5}
+              placeholder="What's happening at your homebase?"
+              value={content}
               onChange={(e) => {
                 setContent(e.target.value);
               }}
+              className="block w-full rounded-t-lg border-0 border-b border-stone-300 focus:border focus:border-emerald-700 focus:ring-emerald-500"
             />
           </div>
 
-          <div>
-            <label>Name</label>
-            <input
-              type="text"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-              required
-              onChange={(e) => {
-                setPostName(e.target.value);
-              }}
-            />
-          </div>
+          <div className="px-2 py-3 sm:px-3">
+            <label
+              htmlFor="visibility"
+              className="flex flex-wrap items-center text-sm text-stone-700 mb-1"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4 mr-1"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                />
+              </svg>
 
-          <div>
-            <label>Description</label>
-            <input
-              type="text"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-              required
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            />
-          </div>
-
-          <div>
-            <label>Images</label>
-            <input
-              type="file"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md"
-              accept="image/png, image/jpeg"
-              multiple
-              onChange={(e) => {
-                setImages(e.target.files);
-              }}
-            />
-          </div>
-
-          <div>
-            <label className="block">Visibility</label>
-            <input
-              className={privatePost ? inactiveClasses : activeClasses}
-              type="button"
-              onClick={() => {
-                setPrivatePost(false);
-              }}
-              value="Public"
-            />
-            <input
-              className={privatePost ? activeClasses : inactiveClasses}
-              type="button"
-              onClick={() => {
-                setPrivatePost(true);
-              }}
-              value="Private"
-            />
-          </div>
-
-          {privatePost && (
-            <div>
-              <label>Locks</label>
-              {locks.map((lock) => (
-                <div key={lock.id}>
-                  <input
-                    type="button"
-                    value={`${lock.name} - ${lock.address}`}
-                    className={
-                      isLockActive(lock.address)
-                        ? activeClasses
-                        : inactiveClasses
-                    }
-                    onClick={() => {
-                      handleLockInput(lock.address);
-                    }}
-                  />
-                </div>
-              ))}
+              <span>Who can see this post?</span>
+            </label>
+            <div className="flex flex-wrap">
+              <input
+                name="visibility"
+                type="button"
+                onClick={() => {
+                  setPrivatePost(false);
+                }}
+                value="Public"
+                className={privatePost ? inactiveClasses : activeClasses}
+              />
+              <input
+                name="visibility"
+                type="button"
+                onClick={() => {
+                  setPrivatePost(true);
+                }}
+                value="Private"
+                className={privatePost ? activeClasses : inactiveClasses}
+              />
             </div>
-          )}
 
-          <button
-            className="my-4 border-2 hover:bg-green-500 hover:text-white border-green-500 px-4 py-2"
-            type="submit"
-          >
-            Post
-          </button>
+            {privatePost && (
+              <div className="mt-3 space-y-1">
+                <label htmlFor="lock" className="block text-xs text-stone-700">
+                  Pick the lock (membership) required to view this post
+                </label>
+
+                {locks.map((lock) => (
+                  <div key={lock.id}>
+                    <input
+                      name="lock"
+                      type="button"
+                      value={`${lock.name} - ${lock.address}`}
+                      className={
+                        isLockActive(lock.address)
+                          ? activeClasses
+                          : inactiveClasses
+                      }
+                      onClick={() => {
+                        handleLockInput(lock.address);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-stone-300 flex items-center justify-between space-x-3 px-2 py-2 sm:px-3">
+            <div className="flex items-center">
+              <label
+                htmlFor="file-upload"
+                className="flex items-center relative cursor-pointer rounded-md text-emerald-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 hover:text-emerald-800"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 mr-1"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                  />
+                </svg>
+                {images.length > 0 ? (
+                  <span className="text-sm text-emerald-700 font-medium">
+                    {images.length} files
+                  </span>
+                ) : (
+                  <span className="text-sm text-stone-700">Upload files</span>
+                )}
+                <input
+                  type="file"
+                  id="file-upload"
+                  name="file-upload"
+                  accept="image/png, image/jpeg"
+                  multiple
+                  onChange={(e) => {
+                    setImages(e.target.files);
+                  }}
+                  className="sr-only"
+                />
+              </label>
+              {images.length > 0 && (
+                <div className="flex items-center ml-1">
+                  <span className="sr-only">Clear files</span>
+                  <button
+                    type="button"
+                    onClick={() => setImages([])}
+                    className="inline-flex items-center rounded-full border border-transparent"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5 text-stone-700"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex-shrink-0">
+              <button
+                type="submit"
+                className="inline-flex items-center rounded-md border border-transparent bg-emerald-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+              >
+                Post
+              </button>
+            </div>
+          </div>
         </form>
       )}
-      {posting && <div>Posting....</div>}
+      {posting && <Loading />}
     </div>
   );
 }

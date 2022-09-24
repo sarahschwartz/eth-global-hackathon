@@ -14,7 +14,7 @@ export default function DashboardLocks({ locks }) {
         </a>
       </div>
       <p className="text-stone-600 mt-2 mb-4">
-        Memberships that I&apos;ve set up to grant access to my homebase
+        Memberships that I&apos;ve set up to grant access to my homebase.
       </p>
       {locks.length > 0 ? (
         <>
