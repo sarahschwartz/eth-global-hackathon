@@ -10,6 +10,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["DM Sans", ...defaultTheme.fontFamily.sans],
+        cursive: ["Fredoka One"],
       },
     },
   },

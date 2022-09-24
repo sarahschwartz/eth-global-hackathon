@@ -23,7 +23,7 @@ export default function Navbar() {
           <div className="w-full py-6 flex flex-wrap items-center justify-between">
             <div className="flex items-center">
               <Link href="/">
-                <a className="text-xl text-emerald-700 font-medium">
+                <a className="text-xl text-emerald-700 font-cursive">
                   🏡 <span className="sr-only sm:not-sr-only">Homebase</span>
                 </a>
               </Link>

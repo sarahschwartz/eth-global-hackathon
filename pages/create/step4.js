@@ -6,6 +6,7 @@ import { getFollowers } from "../../utils/lensQueries";
 import { useRouter } from "next/router";
 import Layout from "../../components/layout/Layout";
 
+// TODO: ignore
 export default function Step4() {
   const router = useRouter();
 
@@ -39,7 +40,7 @@ export default function Step4() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="mx-auto my-16 max-w-7xl px-4 sm:my-24 sm:px-6">
+      <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6">
         <div className="mx-auto max-w-md sm:max-w-3xl">
           <h2 className="text-center text-3xl font-bold leading-8 tracking-tight text-stone-900 sm:text-4xl">
             Invite your homies

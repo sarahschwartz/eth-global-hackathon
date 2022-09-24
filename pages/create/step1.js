@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { generateChallenge, authenticate } from "../../utils/lensQueries";
 import { useRouter } from "next/router";
 import Layout from "../../components/layout/Layout";
+import { loginWithLens } from "../../utils/lensHub";
 
 export default function Step1() {
   const router = useRouter();
@@ -13,41 +14,12 @@ export default function Step1() {
   const { address } = useAccount();
 
   const login = async () => {
-    const { ethereum } = window;
-
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      console.log("PROVIDER", provider);
-      const signer = provider.getSigner();
-      console.log("SIGNER", signer);
-      const signerAddress = await signer.getAddress();
-      console.log("SIGNER ADDRESS", signerAddress);
-      // we request a challenge from the server
-      const challengeResponse = await generateChallenge(address);
-      console.log("CHALLENGE", challengeResponse);
-      console.log("TEXT", challengeResponse.data.challenge.text);
-      const signature = await signer.signMessage(
-        challengeResponse.data.challenge.text
-      );
-      console.log("SIGNATURE", signature);
-      const accessTokens = await authenticate(signerAddress, signature);
-      console.log(accessTokens);
-      localStorage.setItem(
-        "lens_auth_token",
-        accessTokens.data.authenticate.accessToken
-      );
+    try {
+      await loginWithLens();
+      router.push("/create/step2");
+    } catch (error) {
+      console.log("ERROR", error);
     }
-
-    // you now have the accessToken and the refreshToken
-    // {
-    //  data: {
-    //   authenticate: {
-    //    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjB4YjE5QzI4OTBjZjk0N0FEM2YwYjdkN0U1QTlmZkJjZTM2ZDNmOWJkMiIsInJvbGUiOiJub3JtYWwiLCJpYXQiOjE2NDUxMDQyMzEsImV4cCI6MTY0NTEwNjAzMX0.lwLlo3UBxjNGn5D_W25oh2rg2I_ZS3KVuU9n7dctGIU",
-    //    refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjB4YjE5QzI4OTBjZjk0N0FEM2YwYjdkN0U1QTlmZkJjZTM2ZDNmOWJkMiIsInJvbGUiOiJyZWZyZXNoIiwiaWF0IjoxNjQ1MTA0MjMxLCJleHAiOjE2NDUxOTA2MzF9.2Tdts-dLVWgTLXmah8cfzNx7sGLFtMBY7Z9VXcn2ZpE"
-    //   }
-    // }
-
-    router.push("/create/step2");
   };
 
   return (
@@ -58,15 +30,14 @@ export default function Step1() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="mx-auto my-16 max-w-7xl px-4 sm:my-24 sm:px-6">
+      <div className="mx-auto my-8 max-w-7xl px-4 sm:my-12 sm:px-6">
         <div className="mx-auto max-w-md sm:max-w-3xl">
-          <h2 className="text-center text-3xl font-bold leading-8 tracking-tight text-stone-900 sm:text-4xl">
+          <h1 className="text-center text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
             Connect to Lens
-          </h2>
+          </h1>
           <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-500">
-            Your homebase will be powered by Lens, the composable and
-            decentralized social graph of web3. Connect to Lens to access your
-            homebase.
+            Your homebase is powered by Lens, the composable and decentralized
+            social graph of web3. Connect to Lens to get started.
           </p>
           <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">
             <button

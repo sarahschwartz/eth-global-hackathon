@@ -40,7 +40,7 @@ export default function CreateLensPost({ profile, locks }) {
         value: privatePost ? "private" : "public",
       },
     ];
-    
+
     const media = [];
     let mainContentFocus = "TEXT_ONLY";
 
@@ -59,7 +59,7 @@ export default function CreateLensPost({ profile, locks }) {
     }
 
     if (privatePost) {
-      console.log("PRIVATE")
+      console.log("PRIVATE");
       let newDoc = {
         content,
         lockAddresses,
@@ -80,7 +80,7 @@ export default function CreateLensPost({ profile, locks }) {
       }
 
       const docRef = await addDoc(collection(db, "locks"), newDoc);
-      console.log("DOC REF", docRef)
+      console.log("DOC REF", docRef);
       attributes.push({
         displayType: "string",
         traitType: "dbRef",
@@ -88,7 +88,7 @@ export default function CreateLensPost({ profile, locks }) {
       });
     }
 
-    console.log("ATTRIBUTES", attributes)
+    console.log("ATTRIBUTES", attributes);
 
     const metadata = {
       version: "2.0.0",
@@ -197,7 +197,7 @@ export default function CreateLensPost({ profile, locks }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (privatePost && lockAddresses.length < 1) {
       alert("You need to select at least one lock for private content");
     } else {

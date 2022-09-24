@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import Layout from "../../components/layout/Layout";
+import { classNames } from "../../utils/helpers";
 
 const questions = [
   {
@@ -72,10 +73,6 @@ const profile = {
     Birthday: "June 8, 1990",
   },
 };
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Example() {
   return (

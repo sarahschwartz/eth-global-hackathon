@@ -512,13 +512,15 @@ const GET_PUBLICATIONS = `
   }
 `;
 
-export const getPublications = (id) => {
-  return apolloClient.query({
+export const getPublications = async (id) => {
+  const response = await apolloClient.query({
     query: gql(GET_PUBLICATIONS),
     variables: {
       id,
     },
   });
+
+  return response;
 };
 
 const CREATE_PROFILE = `
@@ -724,7 +726,6 @@ export const getFollowers = async (profileId) => {
   return response;
 };
 
-
 const CREATE_POST_TYPED_DATA = `
   mutation($request: CreatePublicPostRequest!) { 
     createPostTypedData(request: $request) {
@@ -757,7 +758,6 @@ const CREATE_POST_TYPED_DATA = `
   }
 }
 `;
-
 
 export const createPostTypedData = (createPostTypedDataRequest) => {
   return apolloClient.mutate({
@@ -852,6 +852,6 @@ export const hasTxBeenIndexed = (txHash) => {
         txHash,
       },
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: "network-only",
   });
 };
