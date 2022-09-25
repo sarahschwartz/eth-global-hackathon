@@ -17,6 +17,7 @@ import Loading from "../../components/placeholders/Loading";
 import RedirectDashboard from "../../components/placeholders/RedirectDashboard";
 import NeedProfile from "../../components/placeholders/NeedProfile";
 import NeedConnectWallet from "../../components/placeholders/NeedConnectWallet";
+import Head from "next/head";
 
 function WrongDashboard({ address }) {
   const [alreadyHasHandle, setAlreadyHasHandle] = useState();
@@ -85,6 +86,7 @@ export default function Dashboard() {
           let pubResponse = await getPublications(response.data.profile.id);
           if (pubResponse.data.publications) {
             setPubs(pubResponse.data.publications.items);
+            console.log("pubs", pubs);
           }
 
           let locksResponse = await getLocksByUser(address);
@@ -105,6 +107,9 @@ export default function Dashboard() {
 
   return (
     <Layout>
+      <Head>
+        <title>Dashboard | Homebase</title>
+      </Head>
       {mounted && (
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           {loading ? (
@@ -115,7 +120,7 @@ export default function Dashboard() {
                 <div className="mx-auto max-w-md sm:max-w-3xl mb-8 sm:mb-12">
                   {isUser ? (
                     <>
-                      <h1 className="text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
+                      <h1 className="text-3xl leading-8 text-emerald-800 sm:text-4xl font-cursive font-normal">
                         gm, {profile.handle}
                       </h1>
                       <p className="text-xl text-stone-600 mx-auto mt-4 mb-5">

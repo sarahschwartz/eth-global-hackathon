@@ -1,30 +1,27 @@
 import { useState } from "react";
-import {
-  createProfile,
-} from "../utils/lensQueries";
+import { createProfile } from "../utils/lensQueries";
 import { loginWithLens } from "../utils/lensHub";
 import { useRouter } from "next/router";
 
 export default function CreateLensProfile(address) {
   const [lensHandle, setLensHandle] = useState("");
-  const router = useRouter
-
+  const router = useRouter;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try{
-      console.log("LOGGING IN")
+    try {
+      console.log("LOGGING IN");
       await loginWithLens();
-      console.log("LOGGED IN!")
+      console.log("LOGGED IN!");
       const request = {
         handle: lensHandle,
       };
       const response = await createProfile(request);
       console.log("CREATED PROFILE!", response);
       router.push(`/dashboard/${lensHandle}`);
-    } catch (error){
-      console.log("ERROR", error)
+    } catch (error) {
+      console.log("ERROR", error);
     }
   };
 

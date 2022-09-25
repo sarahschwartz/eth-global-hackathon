@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LockDetails from "../LockDetails";
+import LockCard from "../LockCard";
 
 export default function DashboardLocks({ locks }) {
   return (
@@ -15,13 +15,13 @@ export default function DashboardLocks({ locks }) {
         </Link>
       </div>
       <p className="text-stone-600 mt-2 mb-5">
-        Memberships that I&apos;ve set up to grant access to my private content.
+        Memberships that grant access to my homebase.
       </p>
       {locks.length > 0 ? (
         <ul role="list" className="-my-5 divide-y divide-stone-300">
           {locks.map((lock) => (
             <li key={lock.id} className="py-4">
-              <LockDetails lock={lock} />
+              <LockCard lock={lock} />
             </li>
           ))}
         </ul>

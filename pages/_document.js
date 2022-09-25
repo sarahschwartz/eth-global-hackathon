@@ -4,6 +4,12 @@ export default function Document() {
   return (
     <Html>
       <Head>
+        <meta
+          name="description"
+          content="Nurture deeper relationships with your fans from all corners of
+          the decentralized web in one place."
+        />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link
           rel="preconnect"

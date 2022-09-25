@@ -301,7 +301,7 @@ export default function CreateLensPost({ profile, locks }) {
             {privatePost && (
               <div className="mt-3 space-y-1">
                 <label htmlFor="lock" className="block text-xs text-stone-700">
-                  Pick the lock (membership) required to view this post
+                  Pick the lock(s) needed to view this post
                 </label>
 
                 {locks.map((lock) => (

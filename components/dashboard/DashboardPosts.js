@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ProfilePublications from "../ProfilePublications";
 
 export default function DashboardPosts({ profile, pubs }) {
   return (
@@ -13,11 +14,9 @@ export default function DashboardPosts({ profile, pubs }) {
           </a>
         </Link>
       </div>
-      <p className="text-stone-600 mt-2 mb-5">
-        Recent content I&apos;ve made on Lens.
-      </p>
+      <p className="text-stone-600 mt-2 mb-5">Recent posts on Lens.</p>
       {pubs.length > 0 ? (
-        <>got stuff</>
+        <ProfilePublications pubs={pubs} />
       ) : (
         <div className="text-center rounded-lg border-2 border-dashed border-stone-300 p-12">
           <h3 className="mt-2 text-sm font-medium text-stone-900">No posts</h3>

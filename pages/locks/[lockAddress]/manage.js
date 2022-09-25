@@ -1,21 +1,18 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { useAccount } from "wagmi";
-import { ethers } from "ethers";
 import { getLockFromAddress } from "../../../utils/unlockQueries";
-import { getMaxKeys, getTotalSupply } from "../../../utils/unlockFunctions";
 import Layout from "../../../components/layout/Layout";
 import Loading from "../../../components/placeholders/Loading";
 import GrantKeysForm from "../../../components/GrantKeysForm";
 import UpdateLock from "../../../components/UpdateLock";
+import LockDetails from "../../../components/LockDetails";
+import Head from "next/head";
 
 export default function ManageLockPage() {
   const [loading, setLoading] = useState(true);
   const [lock, setLock] = useState();
   const [ownsLock, setOwnsLock] = useState(false);
-  const [currentMaxKeys, setCurrentMaxKeys] = useState(null);
-  const [totalSupply, setTotalSupply] = useState(null);
 
   const router = useRouter();
   const { lockAddress } = router.query;
@@ -42,7 +39,6 @@ export default function ManageLockPage() {
         address.toLowerCase() === response.data.lock.owner.toLowerCase()
       ) {
         setOwnsLock(true);
-        await handleGetMaxKeysAndTotalSupply();
       }
 
       setLoading(false);
@@ -52,19 +48,11 @@ export default function ManageLockPage() {
     }
   }
 
-  async function handleGetMaxKeysAndTotalSupply() {
-    let resp = await getMaxKeys(lockAddress);
-    if (resp) {
-      setCurrentMaxKeys(resp);
-    }
-    resp = await getTotalSupply(lockAddress);
-    if (resp) {
-      setTotalSupply(resp);
-    }
-  }
-
   return (
     <Layout>
+      <Head>
+        <title>Manage lock | Homebase</title>
+      </Head>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {loading ? (
           <Loading />
@@ -72,65 +60,19 @@ export default function ManageLockPage() {
           <>
             {ownsLock ? (
               <div className="mx-auto max-w-md sm:max-w-3xl mb-8 sm:mb-12">
-                <h1 className="text-center text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
+                <h1 className="text-center text-3xl leading-8 text-emerald-800 sm:text-4xl font-cursive font-normal">
                   Manage my lock
                 </h1>
-                <p className="text-center text-xl text-stone-600 mx-auto my-4">
+                <p className="text-center text-xl text-stone-600 mx-auto mt-4 mb-8">
                   Manage memberships for your homebase.
                 </p>
-
-                <div className="flex items-center space-x-4 pt-5 md:pt-8">
-                  <div className="flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-8 h-8"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-lg sm:text-xl font-medium text-stone-900">
-                      {lock.name}
-                    </h2>
-                    <p className="text-sm sm:text-base text-stone-500">
-                      <span className="block sm:inline">
-                        {ethers.utils.formatEther(lock.price)} MATIC
-                      </span>{" "}
-                      <span
-                        className="hidden sm:mx-1 sm:inline"
-                        aria-hidden="true"
-                      >
-                        &middot;
-                      </span>{" "}
-                      <span className="block sm:inline">
-                        {totalSupply ? totalSupply : 0} Total Supply
-                      </span>
-                      <span
-                        className="hidden sm:mx-1 sm:inline"
-                        aria-hidden="true"
-                      >
-                        &middot;
-                      </span>{" "}
-                      <span className="block sm:inline">
-                        {currentMaxKeys ? currentMaxKeys : "Infinite"} Max Keys
-                      </span>
-                    </p>
-                  </div>
-                </div>
+                <LockDetails lock={lock} />
                 <GrantKeysForm lockAddress={lock.address} />
                 <UpdateLock lockAddress={lock.address} />
               </div>
             ) : (
               <div className="mx-auto max-w-md sm:max-w-3xl my-8 sm:my-12">
-                <h1 className="text-center text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
+                <h1 className="text-center text-3xl leading-8 text-emerald-800 sm:text-4xl font-cursive font-normal">
                   Uh oh...
                 </h1>
                 <p className="mx-auto mt-4 max-w-3xl text-center text-xl text-stone-600">

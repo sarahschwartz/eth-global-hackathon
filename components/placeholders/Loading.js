@@ -10,7 +10,7 @@ export default function Loading() {
         colors="primary:#121331,secondary:#047857"
         style={{ width: "96px", height: "96px" }}
       ></lord-icon>
-      <p className="text-lg text-emerald-700 font-cursive">
+      <p className="text-lg text-emerald-800 font-cursive">
         Connecting the dots...
       </p>
     </div>

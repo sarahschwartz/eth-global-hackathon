@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { getMaxKeys, getTotalSupply } from "../utils/unlockFunctions";
 import { ethers } from "ethers";
 
-export default function LockDetails({ lock }) {
+export default function LockCard({ lock }) {
   const [currentMaxKeys, setCurrentMaxKeys] = useState(null);
   const [totalSupply, setTotalSupply] = useState(null);
 
@@ -35,7 +36,7 @@ export default function LockDetails({ lock }) {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-8 h-8"
+          className="w-6 h-6"
         >
           <path
             strokeLinecap="round"
@@ -45,10 +46,8 @@ export default function LockDetails({ lock }) {
         </svg>
       </div>
       <div className="min-w-0 flex-1">
-        <h2 className="text-lg sm:text-xl font-medium text-stone-900">
-          {lock.name}
-        </h2>
-        <p className="text-sm sm:text-base text-stone-500">
+        <p className="font-medium text-stone-900">{lock.name}</p>
+        <p className="text-sm text-stone-500">
           <span className="block sm:inline">
             {ethers.utils.formatEther(lock.price)} MATIC
           </span>{" "}
@@ -56,15 +55,17 @@ export default function LockDetails({ lock }) {
             &middot;
           </span>{" "}
           <span className="block sm:inline">
-            {totalSupply ? totalSupply : 0} Total Supply
-          </span>
-          <span className="hidden sm:mx-1 sm:inline" aria-hidden="true">
-            &middot;
-          </span>{" "}
-          <span className="block sm:inline">
-            {currentMaxKeys ? currentMaxKeys : "Infinite"} Max Keys
+            {totalSupply ? totalSupply : 0} /{" "}
+            {currentMaxKeys ? currentMaxKeys : "Infinite"} Keys
           </span>
         </p>
+      </div>
+      <div>
+        <Link href={`/locks/${lock.address}/manage`}>
+          <a className="inline-flex items-center rounded-md border border-stone-500 px-2.5 py-0.5 text-sm font-medium leading-5 text-stone-700 shadow-sm hover:bg-stone-50">
+            Manage
+          </a>
+        </Link>
       </div>
     </div>
   );

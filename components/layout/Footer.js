@@ -6,7 +6,12 @@ export default function Footer() {
     <footer>
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
         <div className="flex justify-center space-x-6 md:order-2">
-          <a href="#" className="text-stone-600 hover:text-stone-700">
+          <a
+            href="https://github.com/sarahschwartz/eth-global-hackathon"
+            target="_blank"
+            rel="noreferrer"
+            className="text-stone-600 hover:text-stone-700"
+          >
             <span className="sr-only">GitHub</span>
             <svg
               className="h-6 w-6"

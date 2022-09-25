@@ -81,7 +81,7 @@ export default function CreateLock() {
     <>
       {!submitted && (
         <>
-          <h1 className="text-center text-3xl leading-8 text-emerald-900 sm:text-4xl font-cursive font-normal">
+          <h1 className="text-center text-3xl leading-8 text-emerald-800 sm:text-4xl font-cursive font-normal">
             Create a lock
           </h1>
           <p className="text-center text-xl text-stone-600 mx-auto mt-4">
@@ -208,7 +208,7 @@ export default function CreateLock() {
               {!error && (
                 <div className="text-center">
                   <Success />
-                  <h3 className="text-lg text-emerald-700 font-cursive">
+                  <h3 className="text-lg text-emerald-800 font-cursive">
                     Lock created!
                   </h3>
                   <p className="mt-1 text-stone-500">
