@@ -9,11 +9,13 @@ import { RadioGroup } from "@headlessui/react";
 import { classNames } from "../utils/helpers";
 import Loading from "../components/placeholders/Loading";
 import NeedConnectWallet from "../components/placeholders/NeedConnectWallet";
+import useAuth from "../hooks/useAuth";
 
 export default function CreateProfile() {
   const router = useRouter();
 
   const { address } = useAccount();
+  const { setAuth } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [lensHandle, setLensHandle] = useState("");
@@ -46,6 +48,7 @@ export default function CreateProfile() {
   const handleContinue = (e) => {
     e.preventDefault();
     localStorage.setItem("lens_handle", selected);
+    setAuth({ lens_handle: selected });
     router.push(`/dashboard/${selected}`);
   };
 
@@ -58,6 +61,7 @@ export default function CreateProfile() {
       const response = await createProfile(request);
       console.log("CREATED PROFILE!", response);
       localStorage.setItem("lens_handle", `${lensHandle}.test`);
+      setAuth({ lens_handle: selected });
       setTimeout(() => {
         router.push(`/dashboard/${lensHandle}.test`);
       }, 1000);

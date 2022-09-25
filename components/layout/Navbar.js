@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
+import useAuth from "../../hooks/useAuth";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const { address } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { auth } = useAuth();
+  const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
+  const pathname = router.pathname;
+
+  const activeClasses = "font-bold text-emerald-800 hover:text-emerald-700";
+  const inactiveClasses = "font-medium text-stone-500 hover:text-emerald-700";
 
   useEffect(() => {
     setMounted(true);
@@ -29,6 +36,32 @@ export default function Navbar() {
               </Link>
             </div>
             <div className="ml-10 space-x-4 flex items-center">
+              {address && auth && (
+                <>
+                  <Link href={`/dashboard/${auth.lens_handle}`}>
+                    <a
+                      className={
+                        pathname.startsWith("/dashboard/")
+                          ? activeClasses
+                          : inactiveClasses
+                      }
+                    >
+                      Dashboard
+                    </a>
+                  </Link>
+                  <Link href={`/homebase/${auth.lens_handle}`}>
+                    <a
+                      className={
+                        pathname.startsWith("/homebase/")
+                          ? activeClasses
+                          : inactiveClasses
+                      }
+                    >
+                      Homebase
+                    </a>
+                  </Link>
+                </>
+              )}
               <ConnectButton />
             </div>
           </div>

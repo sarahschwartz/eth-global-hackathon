@@ -10,6 +10,7 @@ import { infuraProvider } from "wagmi/providers/infura";
 import { publicProvider } from "wagmi/providers/public";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import { AuthProvider } from "../context/AuthProvider";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -40,7 +41,9 @@ function MyApp({ Component, pageProps }) {
         })}
         chains={chains}
       >
-        <Component {...pageProps} />
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );
