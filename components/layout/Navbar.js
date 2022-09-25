@@ -36,7 +36,7 @@ export default function Navbar() {
               </Link>
             </div>
             <div className="ml-10 space-x-4 flex items-center">
-              {address && auth && (
+              {address && auth && auth.lens_handle && (
                 <>
                   <Link href={`/dashboard/${auth.lens_handle}`}>
                     <a

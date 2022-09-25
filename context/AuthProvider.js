@@ -4,8 +4,10 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
-
-  // console.log('AuthProvider', auth);
+  const handle = localStorage.getItem("lens_handle");
+  if(!auth.lens_handle && handle){
+    setAuth({lens_handle: handle})
+  }
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
