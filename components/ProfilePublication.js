@@ -101,7 +101,7 @@ export default function ProfilePublication({ pub, index }) {
 
             {contentRef && (
               <LockedContent
-                pubId={pub.id}
+                pub={pub}
                 dbRef={contentRef}
                 imageRefs={imageRefs}
               />

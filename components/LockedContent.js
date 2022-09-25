@@ -6,8 +6,9 @@ import { useAccount } from "wagmi";
 import { checkIfKeyOwner, getLockFromAddress } from "../utils/unlockQueries";
 import LockedImages from "./LockedImages";
 import { InformationCircleIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 
-export default function LockedContent({ pubId, dbRef, imageRefs }) {
+export default function LockedContent({ pub, dbRef, imageRefs }) {
   const [content, setContent] = useState(null);
   const [privateImages, setPrivateImages] = useState([]);
   const [isKeyOwner, setIsKeyOwner] = useState(false);
@@ -63,7 +64,7 @@ export default function LockedContent({ pubId, dbRef, imageRefs }) {
       {isKeyOwner && content && address ? (
         <>
           <div
-            id={"pub-" + pubId}
+            id={"pub-" + pub.id}
             className="space-y-4 text-sm text-stone-700 my-4"
             dangerouslySetInnerHTML={{ __html: content }}
           />
@@ -83,13 +84,12 @@ export default function LockedContent({ pubId, dbRef, imageRefs }) {
                 You need a membership to unlock this content.
               </p>
               <p className="mt-3 text-sm md:mt-0 md:ml-6">
-                <a
-                  href="#"
-                  className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
-                >
-                  Learn more
-                  <span aria-hidden="true"> &rarr;</span>
-                </a>
+                <Link href={`/homebase/${pub.profile.handle}/locks`}>
+                  <a className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600">
+                    Learn more
+                    <span aria-hidden="true"> &rarr;</span>
+                  </a>
+                </Link>
               </p>
             </div>
           </div>

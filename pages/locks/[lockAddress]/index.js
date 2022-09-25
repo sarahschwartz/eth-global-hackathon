@@ -11,6 +11,7 @@ import LockDetails from "../../../components/LockDetails";
 import Layout from "../../../components/layout/Layout";
 import Loading from "../../../components/placeholders/Loading";
 import Head from "next/head";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function ViewLockPage() {
   const [loading, setLoading] = useState(true);
@@ -97,7 +98,7 @@ export default function ViewLockPage() {
                 </p>
                 <div className="flex flex-wrap items-center justify-between space-x-4 rounded-lg border border-stone-300 p-4">
                   <LockDetails lock={lock} />
-                  <PurchaseKey lock={lock} />
+                  {address ? <PurchaseKey lock={lock} /> : <ConnectButton />}
                 </div>
               </div>
             )}

@@ -1,14 +1,19 @@
-import ProfileLock from "./ProfileLock"
+import ProfileLock from "./ProfileLock";
 
-export default function DashboardLocks({ locks }) {
+export default function ProfileLocks({ lensHandle, locks }) {
   return (
-    <div className="">
-      <h2 className="text-2xl font-bold">Browse Locks</h2>
-      <div className="flex">
-      {locks.map((lock) => (
-        <ProfileLock lock={lock} key={lock.id}/>
-      ))}
+    <>
+      <h4 className="text-lg font-cursive font-normal mt-6">
+        Browse memberships
+      </h4>
+      <p className="text-stone-600 mt-2 mb-6">
+        Snag a membership to unlock private content by @{lensHandle}!
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {locks.map((lock) => (
+          <ProfileLock lock={lock} key={lock.id} />
+        ))}
       </div>
-    </div>
+    </>
   );
 }
