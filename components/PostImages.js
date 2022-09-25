@@ -12,19 +12,21 @@ export default function PostImages({ pub }) {
                   key={`public-${index}`}
                   url={media.original.url}
                   altTag={media.original.altTag}
+                  classes="w-full object-cover rounded bg-stone-100"
                 />
               ))}
             </>
           ) : (
-            <div className="w-20">
+            <>
               {pub.metadata.media.map((media, index) => (
                 <PostImage
                   key={`public-${index}`}
                   url={media.original.url}
                   altTag={media.original.altTag}
+                  classes="w-20 h-20 object-cover rounded bg-stone-100"
                 />
               ))}
-            </div>
+            </>
           )}
         </div>
       )}

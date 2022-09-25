@@ -2,17 +2,18 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import ProfileDetails from "../../components/ProfileDetails";
-import ProfilePublications from "../../components/ProfilePublications";
-import { getProfile, getPublications } from "../../utils/lensQueries";
-import ProfileLocks from "../../components/ProfileLocks";
-import { getLocksByUser } from "../../utils/unlockQueries";
-import Layout from "../../components/layout/Layout";
-import FollowUser from "../../components/FollowUser";
-import Loading from "../../components/placeholders/Loading";
+import ProfileDetails from "../../../components/ProfileDetails";
+import ProfilePublications from "../../../components/ProfilePublications";
+import { getProfile, getPublications } from "../../../utils/lensQueries";
+import ProfileLocks from "../../../components/ProfileLocks";
+import { getLocksByUser } from "../../../utils/unlockQueries";
+import Layout from "../../../components/layout/Layout";
+import FollowUser from "../../../components/FollowUser";
+import Loading from "../../../components/placeholders/Loading";
 import Head from "next/head";
+import ProfileTabs from "../../../components/ProfileTabs";
 
-export default function Profile() {
+export default function ProfileLocksTabContent() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState();
   const [pubs, setPubs] = useState([]);
@@ -55,31 +56,13 @@ export default function Profile() {
       <Head>
         <title>{`${lensHandle} | Homebase`}</title>
       </Head>
-      {/* <div className="mx-8">
-        <h1 className="text-3xl font-bold underline my-4">Profile Page</h1>
-        <ConnectButton />
 
-        {profile && (
-          <div className="pb-8">
-            <ProfileDetails profile={profile} />
-            {!profile.isFollowedByMe ? (
-              <FollowUser profileIdToFollow={profile.id} />
-            ) : (
-              <p className="italic text-gray-500">following</p>
-            )}
-          </div>
-        )}
-
-        {locks.length > 0 && <ProfileLocks locks={locks} />}
-
-        {pubs.length > 0 && <ProfilePublications pubs={pubs} />}
-      </div> */}
       {loading ? (
         <Loading />
       ) : (
         <div className="mx-auto max-w-3xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8 mb-8">
           {/* Side column */}
-          <aside className="hidden lg:col-span-4 xl:block">
+          <aside className="hidden col-span-3 xl:col-span-4 md:block">
             <div className="sticky top-4 space-y-4">
               {/* Profile info */}
               {profile && (
@@ -149,33 +132,24 @@ export default function Profile() {
           </aside>
 
           {/* Main feed */}
-          <main className="lg:col-span-9 xl:col-span-6 space-y-4">
-            {/* If creator, create post
-          <section aria-labelledby="create-post-heading">
-            <div className="rounded-lg bg-white shadow">
-              <div className="p-6">
-                <h2
-                  id="create-post-heading"
-                  className="text-base font-medium text-gray-900"
-                >
-                  Create post
-                </h2>
-                <div className="mt-6 flow-root"></div>
-              </div>
-            </div>
-          </section> */}
-            {/* Feed */}
+          <main className="md:col-span-9 xl:col-span-6 space-y-4 px-4 lg:px-0">
+            {/* Nav */}
+            <ProfileTabs
+              lensHandle={lensHandle}
+              currentTabName={"Memberships"}
+            />
+            {/* Memberships */}
             <div>
-              <h1 className="sr-only">Feed</h1>
-              {pubs.length > 0 ? (
+              <h1 className="sr-only">Memberships</h1>
+              {locks.length > 0 ? (
                 <ProfilePublications pubs={pubs} />
               ) : (
                 <div className="text-center rounded-lg border-2 border-dashed border-stone-300 p-12">
                   <h3 className="mt-2 text-sm font-medium text-stone-900">
-                    No posts yet
+                    No memberships yet
                   </h3>
                   <p className="mt-1 text-sm text-stone-500">
-                    {`Follow @${lensHandle} to stay tuned to future posts!`}
+                    {`Follow @${lensHandle} to stay tuned to upcoming memberships!`}
                   </p>
                 </div>
               )}

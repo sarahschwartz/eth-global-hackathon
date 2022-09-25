@@ -209,17 +209,17 @@ export default function CreateLock() {
                 <div className="text-center">
                   <Success />
                   <h3 className="text-lg text-emerald-800 font-cursive">
-                    Lock created!
+                    Lock created
                   </h3>
                   <p className="mt-1 text-stone-500">
                     Your new lock <span className="font-bold">{lockName}</span>{" "}
                     is ready to be shared!
                   </p>
-                  {/* <Link href={`/locks/manage`}>
+                  <Link href={`/locks/manage`}>
                     <a className="inline-flex items-center rounded-md border border-transparent bg-emerald-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
                       Manage my locks
                     </a>
-                  </Link> */}
+                  </Link>
                 </div>
               )}
             </>

@@ -181,11 +181,10 @@ export default function CreateLensPost({ profile, locks }) {
     console.log("create post: profile has been indexed", result);
 
     const logs = indexedResult.txReceipt.logs;
-
     console.log("create post: logs", logs);
 
-    setPosting(false);
     alert("Success!");
+    clearForm();
   };
 
   const handleImages = async () => {
@@ -228,6 +227,14 @@ export default function CreateLensPost({ profile, locks }) {
   const isLockActive = (address) => {
     return lockAddresses.includes(address) ? true : false;
   };
+
+  function clearForm() {
+    setContent("");
+    setPrivatePost(false);
+    setLockAddresses([]);
+    setPosting(false);
+    setImages([]);
+  }
 
   return (
     <div>

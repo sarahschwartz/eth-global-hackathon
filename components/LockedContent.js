@@ -78,9 +78,20 @@ export default function LockedContent({ pubId, dbRef, imageRefs }) {
                 aria-hidden="true"
               />
             </div>
-            <p className="text-sm text-stone-700 ml-2">
-              You need a key to unlock this content.
-            </p>
+            <div className="ml-2 flex-1 md:flex md:justify-between">
+              <p className="text-sm text-blue-700">
+                You need a membership to unlock this content.
+              </p>
+              <p className="mt-3 text-sm md:mt-0 md:ml-6">
+                <a
+                  href="#"
+                  className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
+                >
+                  Learn more
+                  <span aria-hidden="true"> &rarr;</span>
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       )}

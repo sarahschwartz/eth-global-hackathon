@@ -6,29 +6,33 @@ export default function LockedImages({ images }) {
       {images.length > 0 && (
         <div className="flex flex-wrap space-x-3 mb-5">
           {images.length == 1 ? (
-            <div className="relative">
+            <>
               {images.map((img, index) => (
-                <Image
-                  key={`private-${index}`}
-                  src={img}
-                  alt="private content"
-                  layout="fill"
-                  objectFit="cover"
-                />
+                <div key={`private-${index}`} className="relative w-full h-80">
+                  <Image
+                    src={img}
+                    alt="private content"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded bg-stone-100"
+                  />
+                </div>
               ))}
-            </div>
+            </>
           ) : (
-            <div className="relative w-20">
+            <>
               {images.map((img, index) => (
-                <Image
-                  key={`private-${index}`}
-                  src={img}
-                  alt="private content"
-                  layout="fill"
-                  objectFit="cover"
-                />
+                <div key={`private-${index}`} className="relative w-20 h-20">
+                  <Image
+                    src={img}
+                    alt="private content"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded bg-stone-100"
+                  />
+                </div>
               ))}
-            </div>
+            </>
           )}
         </div>
       )}

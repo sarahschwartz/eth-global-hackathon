@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function PostImage({ url, altTag }) {
+export default function PostImage({ url, altTag, classes }) {
   const [src, setSrc] = useState(url);
 
   return (
@@ -10,7 +10,7 @@ export default function PostImage({ url, altTag }) {
           src={src.toString().startsWith("http") ? src : `https://${src}`}
           onError={() => setSrc("/assets/error-image.jpeg")}
           alt={altTag ? altTag : "lens-image"}
-          className="w-full object-cover rounded bg-stone-100"
+          className={classes}
         />
       )}
     </>

@@ -64,7 +64,7 @@ export default function ManageLockPage() {
                   Manage my lock
                 </h1>
                 <p className="text-center text-xl text-stone-600 mx-auto mt-4 mb-8">
-                  Manage memberships for your homebase.
+                  View and manage this membership for your homebase.
                 </p>
                 <LockDetails lock={lock} />
                 <GrantKeysForm lockAddress={lock.address} />

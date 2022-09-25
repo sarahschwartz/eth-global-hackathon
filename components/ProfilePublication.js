@@ -33,7 +33,7 @@ export default function ProfilePublication({ pub, index }) {
   return (
     <>
       {pub.__typename === "Post" && (
-        <li className="bg-white px-4 py-6 shadow sm:rounded-lg sm:p-6">
+        <li className="bg-white px-4 py-6 shadow rounded-lg sm:p-6">
           <article aria-labelledby={"pub-" + pub.id}>
             <div className="flex space-x-3">
               <div className="flex-shrink-0">
